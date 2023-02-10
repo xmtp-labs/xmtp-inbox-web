@@ -41,6 +41,8 @@ const ConversationTile = ({ conversation }: ConversationTileProps): JSX.Element 
 
   const latestMessage = previewMessages.get(getConversationKey(conversation));
 
+  const contentTypeId = latestMessage?.contentType.typeId
+
   const conversationDomain = conversation.context?.conversationId.split('/')[0] ?? '';
 
   const isSelected = recipentAddress === getConversationKey(conversation);
@@ -100,7 +102,8 @@ const ConversationTile = ({ conversation }: ConversationTileProps): JSX.Element 
           </span>
         </div>
         <span className="text-sm text-gray-500 line-clamp-1 break-all">
-          {address === latestMessage?.senderAddress && 'You: '} {latestMessage?.content}
+          {address === latestMessage?.senderAddress && 'You: '}
+          {contentTypeId === 'audio-key' ? 'Audio File' : latestMessage?.content}
         </span>
       </div>
     </div>

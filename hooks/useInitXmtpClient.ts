@@ -1,4 +1,4 @@
-import { Client } from '@xmtp/xmtp-js';
+import { Client, ContentTypeId } from '@xmtp/xmtp-js';
 import { Signer } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
 import { getAppVersion, getEnv, loadKeys, storeKeys, wipeKeys } from '../helpers';
@@ -22,6 +22,33 @@ const useInitXmtpClient = (cacheOnly = false) => {
     }
   };
 
+  const ContentTypeAudioeKey = new ContentTypeId({
+    authorityId: 'xmtp.test',
+    typeId: 'audio-key',
+    versionMajor: 1,
+    versionMinor: 0,
+  })
+
+  class VoiceCodec {
+    get contentType() {
+      return ContentTypeAudioeKey;
+    }
+
+    encode(key: string | undefined) {
+      return {
+        type: ContentTypeAudioeKey,
+        parameters: {},
+        content: new TextEncoder().encode(key)
+      };
+    }
+
+    decode(content: { content: any }) {
+      const uint8Array = content.content;
+      const key = new TextDecoder().decode(uint8Array);
+      return key;
+    }
+  }
+
   const initClient = useCallback(
     async (wallet: Signer) => {
       if (wallet && !client && address) {
@@ -33,15 +60,16 @@ const useInitXmtpClient = (cacheOnly = false) => {
               return;
             }
             keys = await Client.getKeys(wallet, {
-              env: getEnv(),
+              env: 'production',
               appVersion: getAppVersion()
             });
             storeKeys(address, keys);
           }
           const xmtp = await Client.create(null, {
-            env: getEnv(),
+            env: 'production',
             appVersion: getAppVersion(),
-            privateKeyOverride: keys
+            privateKeyOverride: keys,
+            codecs: [new VoiceCodec()]
           });
           setClient(xmtp);
           setIsRequestPending(false);

@@ -24,6 +24,23 @@ const isOnSameDay = (d1?: Date, d2?: Date): boolean => {
 const formatDate = (d?: Date) =>
   d?.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
+const TypeOfMessage = ({ message }: MessageTileProps): JSX.Element => {
+  const contentTypeId = message.contentType.typeId;
+  const isAudioNote = contentTypeId === 'audio-key';
+
+  if (isAudioNote) {
+    return (
+      <audio controls>
+        <source src={message.content} type="audio/mpeg" />
+      </audio>
+    );
+  } else if (message.error) {
+    return <div>{message.error.message}</div>;
+  } else {
+    return <Emoji text={message.content || ''} />;
+  }
+};
+
 const MessageTile = ({ message }: MessageTileProps): JSX.Element => (
   <div className="flex items-start mx-auto mb-4">
     <Avatar peerAddress={message.senderAddress as string} />
@@ -38,7 +55,7 @@ const MessageTile = ({ message }: MessageTileProps): JSX.Element => (
         className="block text-md px-2 mt-2 text-black font-normal break-words"
         data-testid={'message-tile-text'}
       >
-        {message.error ? `Error: ${message.error?.message}` : <Emoji text={message.content || ''} />}
+        <TypeOfMessage message={message} />
       </span>
     </div>
   </div>
