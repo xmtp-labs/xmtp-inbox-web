@@ -16,6 +16,9 @@ class AppDocument extends Document {
     return (
       <Html className="h-full bg-gray-100">
         <Head>
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="apple-touch-icon" href="/icon.png"></link>
+          <meta name="theme-color" content="#fff" />
           <meta name="description" content="Chat via XMTP" />
           <link rel="icon" href="/favicon.ico" />
           <link

@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+});
+
+const nextConfig = withPWA({
   // Not setting reactStrictMode here due to issues with modal compatibility, but rest of app is wrapped in strict mode.
   images: {
     loader: "akamai",
@@ -14,6 +21,6 @@ const nextConfig = {
     config.resolve.mainFields = ["browser", "main", "module"];
     return config;
   },
-};
+});
 
 module.exports = nextConfig;
