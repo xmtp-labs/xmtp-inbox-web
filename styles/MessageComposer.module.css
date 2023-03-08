@@ -2,7 +2,7 @@
   border-radius: 24px;
   background-color: #fafafa;
   border: 1px solid #e5e7eb;
-  height: 40px;
+  min-height: 40px;
   padding: 10px 8px 10px 16px;
 }
 

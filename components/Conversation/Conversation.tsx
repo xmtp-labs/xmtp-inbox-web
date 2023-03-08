@@ -1,6 +1,8 @@
+import type { Attachment } from "xmtp-content-type-remote-attachment";
 import React, { useCallback, useState } from "react";
 import { MessagesList, MessageComposer } from "./";
 import Loader from "../../components/Loader";
+import AttachmentWrapper from "../AttachmentWrapper";
 import useGetMessages from "../../hooks/useGetMessages";
 import useSendMessage from "../../hooks/useSendMessage";
 import { useXmtpStore } from "../../store/xmtp";
@@ -23,7 +25,10 @@ const Conversation = (): JSX.Element => {
     : storeConversationId;
   const selectedConversation = conversations.get(conversationId as string);
 
-  const { sendMessage } = useSendMessage(selectedConversation);
+  const [attachment, setAttachment] = useState<Attachment | undefined>(
+    undefined,
+  );
+  const { sendMessage } = useSendMessage(selectedConversation, attachment);
 
   const [endTime, setEndTime] = useState<Map<string, Date>>(new Map());
 
@@ -61,7 +66,7 @@ const Conversation = (): JSX.Element => {
   }
 
   return (
-    <>
+    <AttachmentWrapper attachment={attachment} setAttachment={setAttachment}>
       <div className="bg-white h-[calc(100vh-7rem)]">
         <div className="h-full flex justify-between flex-col">
           <MessagesList
@@ -71,8 +76,12 @@ const Conversation = (): JSX.Element => {
           />
         </div>
       </div>
-      <MessageComposer onSend={sendMessage} />
-    </>
+      <MessageComposer
+        onSend={sendMessage}
+        attachment={attachment}
+        setAttachment={setAttachment}
+      />
+    </AttachmentWrapper>
   );
 };
 

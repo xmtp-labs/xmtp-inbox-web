@@ -5,6 +5,7 @@ const nextConfig = {
     loader: "akamai",
     path: "",
   },
+  productionBrowserSourceMaps: true,
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // Fixes npm packages that depend on `fs` module

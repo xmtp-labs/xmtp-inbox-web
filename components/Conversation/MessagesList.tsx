@@ -1,3 +1,4 @@
+import { ContentTypeRemoteAttachment } from "xmtp-content-type-remote-attachment";
 import { DecodedMessage } from "@xmtp/xmtp-js";
 import React, { FC } from "react";
 import Emoji from "react-emoji-render";
@@ -7,6 +8,8 @@ import AddressPill from "../AddressPill";
 import InfiniteScroll from "react-infinite-scroll-component";
 import useWindowSize from "../../hooks/useWindowSize";
 import { address } from "../Address";
+import RemoteAttachmentMessageTile from "./RemoteAttachmentMessageTile";
+import JSXStyle from "styled-jsx/style";
 
 export type MessageListProps = {
   messages: DecodedMessage[];
@@ -29,6 +32,14 @@ const formatDate = (d?: Date) =>
     day: "numeric",
   });
 
+function contentFor(message: DecodedMessage): JSX.Element {
+  if (message.contentType.sameAs(ContentTypeRemoteAttachment)) {
+    return <RemoteAttachmentMessageTile message={message} />;
+  } else {
+    return <Emoji text={message.content || ""} />;
+  }
+}
+
 const MessageTile = ({ message }: MessageTileProps): JSX.Element => (
   <div className="flex items-start mx-auto mb-4">
     <Avatar peerAddress={message.senderAddress as address} />
@@ -42,11 +53,9 @@ const MessageTile = ({ message }: MessageTileProps): JSX.Element => (
       <span
         className="block text-md px-2 mt-2 text-black font-normal break-words"
         data-testid={"message-tile-text"}>
-        {message.error ? (
-          `Error: ${message.error?.message}`
-        ) : (
-          <Emoji text={message.content || ""} />
-        )}
+        {message.error
+          ? `Error: ${message.error?.message}`
+          : contentFor(message)}
       </span>
     </div>
   </div>

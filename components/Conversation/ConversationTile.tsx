@@ -47,6 +47,15 @@ const ConversationTile = ({
     return null;
   }
 
+  let preview: String;
+  if (!latestMessage) {
+    preview = "";
+  } else if (typeof latestMessage.content === "string") {
+    preview = latestMessage.content;
+  } else {
+    preview = "Attachment";
+  }
+
   return (
     <div
       onClick={onClick}
@@ -92,8 +101,7 @@ const ConversationTile = ({
           </span>
         </div>
         <span className="text-sm text-gray-500 line-clamp-1 break-all">
-          {address === latestMessage?.senderAddress && "You: "}{" "}
-          {latestMessage?.content}
+          {address === latestMessage?.senderAddress && "You: "} {preview}
         </span>
       </div>
     </div>
