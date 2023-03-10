@@ -34,7 +34,7 @@ CategoryTag.args = {
 
 export const WalletAddressTag = Template.bind({});
 WalletAddressTag.args = {
-  text: shortAddress("0x1234567890123456789012345678901234567890"),
+  text: shortAddress("0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0"),
 };
 
 export const EnsAddressTag = Template.bind({});
@@ -44,7 +44,7 @@ EnsAddressTag.args = {
 
 export const LensAddressTag = Template.bind({});
 LensAddressTag.args = {
-  text: "test.lens",
+  text: "hi.xmtp.lens",
 };
 
 export const TagLoading = Template.bind({});

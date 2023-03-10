@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useListConversations from "../hooks/useListConversations";
 import { useXmtpStore } from "../store/xmtp";
 import { getConversationId } from "../helpers";
 import { ConversationList } from "../component-library/components/ConversationList/ConversationList";
 import { Conversation } from "@xmtp/xmtp-js";
-import router from "next/router";
 import { MessagePreviewCardWrapper } from "../wrappers/MessagePreviewCardWrapper";
 import { FullConversationWrapper } from "../wrappers/FullConversationWrapper";
 import { AddressInputWrapper } from "../wrappers/AddressInputWrapper";
@@ -18,8 +17,10 @@ export type address = "0x${string}";
 const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
   useInitXmtpClient();
   // XMTP Store
-  const client = useXmtpStore((state) => state.client);
   const conversations = useXmtpStore((state) => state.conversations);
+  const recipientEnteredValue = useXmtpStore(
+    (state) => state.recipientEnteredValue,
+  );
 
   const previewMessages = useXmtpStore((state) => state.previewMessages);
   const loadingConversations = useXmtpStore(
@@ -40,34 +41,33 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
     return convoALastMessageDate < convoBLastMessageDate ? 1 : -1;
   };
 
-  // useEffect(() => {
-  //   if (!client) {
-  //     router.push("/");
-  //   }
-  // }, [client]);
-
   return (
-    <div className="bg-white w-screen md:h-full flex flex-col md:flex-row">
-      <div className="flex md:w-2/5 overflow-y-scroll">
+    <div className="bg-white w-screen md:h-screen flex flex-col md:flex-row">
+      <div className="flex md:w-1/2 md:min-w-fit">
         <SideNavWrapper />
         <div className="w-full max-w-lg flex flex-col h-screen overflow-scroll">
           {!loadingConversations && <HeaderDropdownWrapper />}
           <ConversationList
             isLoading={loadingConversations}
-            messages={Array.from(conversations.values())
-              .sort(orderByLatestMessage)
-              .map((convo) => (
-                <MessagePreviewCardWrapper
-                  key={getConversationId(convo)}
-                  convo={convo}
-                />
-              ))}
+            messages={
+              // If there is a value entered but no conversations yet, show placeholder message.
+              recipientEnteredValue && !conversations.size
+                ? [<MessagePreviewCardWrapper />]
+                : Array.from(conversations.values())
+                    .sort(orderByLatestMessage)
+                    .map((convo) => (
+                      <MessagePreviewCardWrapper
+                        key={getConversationId(convo)}
+                        convo={convo}
+                      />
+                    ))
+            }
           />
         </div>
       </div>
-      <div className="flex w-full flex-col h-screen">
+      <div className="flex flex-col w-full h-full">
         <AddressInputWrapper />
-        <div className="h-[calc(100vh-8rem)] flex flex-col">
+        <div className="h-full w-full flex flex-col-reverse overflow-scroll">
           <FullConversationWrapper />
         </div>
         <MessageInputWrapper />

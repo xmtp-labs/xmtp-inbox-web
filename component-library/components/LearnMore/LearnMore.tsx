@@ -18,8 +18,8 @@ export const LearnMore = () => (
           <Image src="https://picsum.photos/350/150" alt="Company 1" />
           <h2 className="text-lg font-extrabold">FakeCompany.xyz</h2>
           <p className="text-md">
-            The one and only fake company that does XYZ. You will love learning
-            about this super interesting company.
+            Placeholder: The one and only fake company that does XYZ. You will
+            love learning about this super interesting company.
           </p>
           <div className="flex justify-start">
             <Tag text="Messaging" icon={TagIcon.MESSAGING} />
@@ -32,8 +32,8 @@ export const LearnMore = () => (
           <Image src="https://picsum.photos/350/150" alt="Company 2" />
           <h2 className="text-lg font-extrabold">FakeCompany.xyz</h2>
           <p className="text-md">
-            The one and only fake company that does XYZ. You will love learning
-            about this super interesting company.
+            Placeholder: The one and only fake company that does XYZ. You will
+            love learning about this super interesting company.
           </p>
           <div className="flex justify-start">
             <Tag text="Shopping" icon={TagIcon.SHOPPING} />

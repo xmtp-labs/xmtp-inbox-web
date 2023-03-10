@@ -47,7 +47,6 @@ FullConversationWithMessages.args = {
       <FullMessage {...toProps} />
     </div>,
   ),
-  convoStartDate: new Date(),
 };
 
 export const FullConversationLoading = Template.bind({});

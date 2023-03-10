@@ -24,7 +24,7 @@ interface MessagesPageProps {
 }
 
 const fromProps = {
-  text: "This should be a from message. Here is my super, super, super interesting from message. What do you think?",
+  text: "This should be a from message.",
   from: {
     displayAddress: "hi.xmtp.eth",
     isSelf: true,
@@ -33,7 +33,7 @@ const fromProps = {
 };
 
 const toProps = {
-  text: "This should be a to message. Here is my super, super, super interesting to message. What do you think?",
+  text: "This should be a to message.",
   from: {
     displayAddress: "otherperson.xmtp.eth",
     isSelf: false,
@@ -44,7 +44,7 @@ const toProps = {
 export const MessagesPage = ({ type }: MessagesPageProps) => {
   const alternatingMessage = (
     <div>
-      <FullMessage {...fromProps} />
+      <FullMessage {...fromProps} showDateDivider />
       <FullMessage {...toProps} />
     </div>
   );
@@ -112,7 +112,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <AddressInput
             resolvedAddress={{
               displayAddress: "hi.xmtp.eth",
-              walletAddress: "01234",
+              walletAddress: "0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0",
             }}
           />
           <FullConversation messages={[]} />
@@ -133,7 +133,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
               messages={Array(20).fill(
                 <MessagePreviewCard
                   text="Here's an existing message"
-                  displayAddress="theseWillAllBeTheSame.eth"
+                  displayAddress="theseWillAllBeTheSame.xmtp.eth"
                   datetime={new Date()}
                 />,
               )}
@@ -160,7 +160,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
               messages={Array(20).fill(
                 <MessagePreviewCard
                   text="Here's an existing message"
-                  displayAddress="theseWillAllBeTheSame.eth"
+                  displayAddress="theseWillAllBeTheSame.xmtp.eth"
                   datetime={new Date()}
                 />,
               )}
@@ -171,7 +171,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <AddressInput
             resolvedAddress={{
               displayAddress: "hi.xmtp.eth",
-              walletAddress: "01234",
+              walletAddress: "0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0",
             }}
           />
           <FullConversation />
@@ -188,7 +188,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <SideNav
             displayAddress="hi.xmtp.eth"
             walletAddress={shortAddress(
-              "0x0123456789x0123456789x0123456789x0123456789",
+              "0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0",
             )}
           />
           <div className="w-full flex flex-col h-screen overflow-scroll">
@@ -200,7 +200,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <AddressInput
             resolvedAddress={{
               displayAddress: "hi.xmtp.eth",
-              walletAddress: "01234",
+              walletAddress: "0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0",
             }}
           />
           <FullConversation messages={[]} />
@@ -232,7 +232,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <AddressInput
             resolvedAddress={{
               displayAddress: "hi.xmtp.eth",
-              walletAddress: "01234",
+              walletAddress: "0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0",
             }}
           />
           <div className="h-full w-full flex flex-col-reverse overflow-scroll">
@@ -243,10 +243,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
               endMessage={!40}
               hasMore={false}
               loader={false}>
-              <FullConversation
-                messages={Array(2).fill(alternatingMessage)}
-                convoStartDate={new Date()}
-              />
+              <FullConversation messages={Array(2).fill(alternatingMessage)} />
             </InfiniteScroll>
           </div>
           <MessageInput />
@@ -266,7 +263,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
               messages={Array(20).fill(
                 <MessagePreviewCard
                   text="Here's an existing message"
-                  displayAddress="theseWillAllBeTheSame.eth"
+                  displayAddress="theseWillAllBeTheSame.xmtp.eth"
                   datetime={new Date()}
                 />,
               )}
@@ -277,7 +274,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <AddressInput
             resolvedAddress={{
               displayAddress: "hi.xmtp.eth",
-              walletAddress: "01234",
+              walletAddress: "0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0",
             }}
           />
           <div className="h-full w-full flex flex-col-reverse overflow-scroll">
@@ -288,10 +285,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
               endMessage={!40}
               hasMore={false}
               loader={false}>
-              <FullConversation
-                messages={Array(20).fill(alternatingMessage)}
-                convoStartDate={new Date()}
-              />
+              <FullConversation messages={Array(20).fill(alternatingMessage)} />
             </InfiniteScroll>
           </div>
           <MessageInput />
@@ -311,7 +305,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
               messages={Array(20).fill(
                 <MessagePreviewCard
                   text="Here's an existing message"
-                  displayAddress="theseWillAllBeTheSame.eth"
+                  displayAddress="theseWillAllBeTheSame.xmtp.eth"
                   datetime={new Date()}
                 />,
               )}
@@ -322,7 +316,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <AddressInput
             resolvedAddress={{
               displayAddress: "hi.xmtp.eth",
-              walletAddress: "01234",
+              walletAddress: "0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0",
             }}
           />
           <FullConversation isLoading />
@@ -358,7 +352,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
               messages={Array(20).fill(
                 <MessagePreviewCard
                   text="Here's an existing message"
-                  displayAddress="theseWillAllBeTheSame.eth"
+                  displayAddress="theseWillAllBeTheSame.xmtp.eth"
                   datetime={new Date()}
                 />,
               )}
@@ -369,7 +363,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <AddressInput
             resolvedAddress={{
               displayAddress: "hi.xmtp.eth",
-              walletAddress: "01234",
+              walletAddress: "0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0",
             }}
           />
           <FullConversation messages={[]} />
@@ -390,7 +384,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
               messages={Array(20).fill(
                 <MessagePreviewCard
                   text="Here's an existing message"
-                  displayAddress="theseWillAllBeTheSame.eth"
+                  displayAddress="theseWillAllBeTheSame.xmtp.eth"
                   datetime={new Date()}
                 />,
               )}
@@ -401,7 +395,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <AddressInput
             resolvedAddress={{
               displayAddress: "hi.xmtp.eth",
-              walletAddress: "01234",
+              walletAddress: "0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0",
             }}
           />
           <ExpandedWalletCard
@@ -409,7 +403,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
             avatar={<Avatar />}
             currentAddress="hi.xmtp.eth"
             addresses={[
-              shortAddress("0x0123456789012345678901234567890123456789"),
+              shortAddress("0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0"),
               "hi.xmtp.eth",
               "hi.xmtp.lens",
             ]}

@@ -42,11 +42,9 @@ export const HeaderDropdown = ({
       data-modal-target="headerModalId"
       className="p-4 w-full border border-r border-gray-100">
       <div className="flex justify-between items-center">
-        <span className="flex">
+        <span className="flex" onClick={() => setIsOpen(!isOpen)}>
           <h1 className="font-bold text-lg mr-2">{currentlySelected}</h1>
-          {!disabled && (
-            <ChevronDownIcon width="24" onClick={() => setIsOpen(!isOpen)} />
-          )}
+          {!disabled && <ChevronDownIcon width="24" />}
         </span>
         <IconButton
           onClick={() => onClick?.()}
@@ -58,7 +56,7 @@ export const HeaderDropdown = ({
         <Transition.Root show={isOpen} as={Fragment}>
           <Dialog
             as="div"
-            className="overflow-y-auto fixed inset-0 z-10"
+            className="overflow-y-auto fixed inset-0"
             onClose={() => {}}>
             <div className="bg-white w-fit rounded-lg absolute top-14 left-16">
               <div
@@ -73,6 +71,7 @@ export const HeaderDropdown = ({
                           type="button"
                           onClick={() => {
                             onChange?.();
+                            setIsOpen(false);
                             // setCurrentlySelected?.();
                           }}
                           className={`cursor-pointer my-1 outline-none ${

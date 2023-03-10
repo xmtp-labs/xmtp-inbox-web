@@ -18,5 +18,5 @@ const Template: ComponentStory<typeof SideNav> = (args) => (
 export const SideNavDefault = Template.bind({});
 SideNavDefault.args = {
   displayAddress: "hi.xmtp.eth",
-  walletAddress: shortAddress("0x0123456789012345678901234567890123456789"),
+  walletAddress: shortAddress("0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0"),
 };

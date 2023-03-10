@@ -31,7 +31,7 @@ export const FullIncomingMessage = Template.bind({});
 FullIncomingMessage.args = {
   text: "Heyyyyyy there",
   from: {
-    displayAddress: shortAddress("0x0123456789012345678901234567890123456789"),
+    displayAddress: shortAddress("0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0"),
     isSelf: false,
   },
   datetime: new Date(),
