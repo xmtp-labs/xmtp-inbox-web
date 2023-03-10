@@ -4,10 +4,11 @@ import { useXmtpStore } from "../store/xmtp";
 import { watchAccount } from "@wagmi/core";
 import useInitXmtpClient from "../hooks/useInitXmtpClient";
 import useHandleConnect from "../hooks/useHandleConnect";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount } from "wagmi";
 import { useRouter } from "next/router";
-import { wipeKeys } from "../helpers";
 import { OnboardingStep } from "../component-library/components/OnboardingStep/OnboardingStep";
+import useDisconnectWallet from "../hooks/useDisconnectWallet";
+import { address } from "./inbox";
 
 const OnboardingPage: NextPage = () => {
   const client = useXmtpStore((state) => state.client);
@@ -17,7 +18,7 @@ const OnboardingPage: NextPage = () => {
   const { handleConnect } = useHandleConnect();
   const { createXmtpIdentity, newAccount, connectToXmtp, isLoading } =
     useInitXmtpClient();
-  const { disconnect: disconnectWagmi, reset: resetWagmi } = useDisconnect();
+  const { onDisconnect } = useDisconnectWallet();
 
   const [loading, setLoading] = useState(isLoading);
   const router = useRouter();
@@ -64,10 +65,7 @@ const OnboardingPage: NextPage = () => {
         onCreate={createXmtpIdentity}
         onEnable={connectToXmtp}
         onDisconnect={() => {
-          wipeKeys(address ?? "");
-          disconnectWagmi();
-          resetWagmi();
-          resetXmtpState();
+          onDisconnect(address as address);
         }}
       />
     </div>

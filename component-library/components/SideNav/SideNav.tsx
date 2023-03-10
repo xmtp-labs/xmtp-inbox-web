@@ -8,6 +8,7 @@ import { classNames, shortAddress } from "../../../helpers";
 import { XmtpIcon } from "../Icons/XmtpIcon";
 import { useState } from "react";
 import { Avatar } from "../Avatar/Avatar";
+import { DisconnectIcon } from "../Icons/DisconnectIcon";
 
 interface SideNav {
   /**
@@ -26,6 +27,10 @@ interface SideNav {
    * What is the avatarUrl?
    */
   avatarUrl?: string;
+  /**
+   * What function should be run to disconnect a wallet?
+   */
+  onDisconnect: () => void;
 }
 
 const SideNav = ({
@@ -33,6 +38,7 @@ const SideNav = ({
   displayAddress,
   walletAddress,
   avatarUrl,
+  onDisconnect,
 }: SideNav) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -49,6 +55,13 @@ const SideNav = ({
       className={isOpen ? "mr-4" : ""}
     />,
   ];
+
+  const disconnectIcon = (
+    <div key="Disconnect" className={isOpen ? "mr-4" : ""}>
+      <DisconnectIcon />
+    </div>
+  );
+
   const [currentIcon, setCurrentIcon] = useState(icons[0].key);
 
   const mappedButtons = icons.map((icon) => {
@@ -110,7 +123,20 @@ const SideNav = ({
           </div>
         </div>
       </div>
-      <div className="pb-4 w-full">{icon}</div>
+      <div className="p-1 pb-4 w-full">
+        <button
+          key={disconnectIcon.key}
+          type="button"
+          onClick={onDisconnect}
+          aria-label={currentIcon as string}
+          className={`mb-4 hover:bg-gray-200 p-2 hover:text-black text-gray-400 rounded-lg w-full flex item-center h-fit rounded cursor-pointer`}>
+          <div className="flex justify-center items-center h-fit">
+            {disconnectIcon}
+            {isOpen && disconnectIcon.key}
+          </div>
+        </button>
+        {icon}
+      </div>
     </div>
   );
 };
