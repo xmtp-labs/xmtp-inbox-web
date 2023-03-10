@@ -52,7 +52,7 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
             messages={
               // If there is a value entered but no conversations yet, show placeholder message.
               recipientEnteredValue && !conversations.size
-                ? [<MessagePreviewCardWrapper />]
+                ? [<MessagePreviewCardWrapper key="dummy_message" />]
                 : Array.from(conversations.values())
                     .sort(orderByLatestMessage)
                     .map((convo) => (

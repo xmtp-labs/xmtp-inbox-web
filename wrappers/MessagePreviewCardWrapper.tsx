@@ -47,6 +47,10 @@ export const MessagePreviewCardWrapper = ({
     }
   };
 
+  if (!previewMessage?.content) {
+    return null;
+  }
+
   return (
     <MessagePreviewCard
       isSelected={isSelected}
