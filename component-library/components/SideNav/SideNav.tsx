@@ -30,7 +30,7 @@ interface SideNav {
   /**
    * What function should be run to disconnect a wallet?
    */
-  onDisconnect: () => void;
+  onDisconnect?: () => void;
 }
 
 const SideNav = ({
