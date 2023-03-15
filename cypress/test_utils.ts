@@ -13,13 +13,15 @@ export const checkLink = (testId: string, link: string) =>
   cy.get(`[data-testid=${testId}]`).should("have.attr", "href", link);
 
 export const disconnectWallet = () => {
-  cy.get(`[data-testid="settings-icon"]`).click();
-  cy.get(`[data-testid="disconnect-wallet-cta"]`).click();
+  checkElement("collapse-icon").click();
+  checkElement("disconnect-wallet-cta").click();
 };
 
 export const startDemoEnv = () => {
   cy.visit("http://localhost:3000");
   localStorage.setItem(ENVIRONMENT.DEMO, String(true));
+  checkElement("create-xmtp-identity-cta").click();
+  checkElement("enable-xmtp-identity-cta").click();
 };
 
 const enterWalletAddress = (testUser: string) => {
@@ -42,28 +44,23 @@ const sendMessages = (
   for (let i = 0; i < numberOfTimes; i++) {
     // Enters message
     checkElement("message-input").type(message);
-    cy.wait(500);
     checkElement("message-input-submit").click();
-    cy.wait(500);
+    cy.get(`[data-testid=conversations-list-panel]`, { timeout: TIMEOUT })
+      .children()
+      .should("have.length", 1);
   }
 
   if (differentMessageText) {
     const differentMessage = "differentMessage";
     // Send additional different message, check that different message was returned in correct order
     checkElement("message-input").type(differentMessage);
-    cy.wait(500);
     checkElement("message-input-submit").click();
-    cy.wait(500);
   }
 
   // A way around to solve the message streaming issue
   cy.wait(2000);
-  checkElement("xmtp-logo").click();
-  cy.wait(2000);
-  // Confirms successful message
-  cy.get(`[data-testid=conversations-list-panel]`, { timeout: TIMEOUT })
-    .children()
-    .should("have.length", 1);
+  checkElement("new-message-icon-cta").click();
+  checkElement("message-to-input").type(testUser);
 };
 
 const checkMessageOutput = (numberOfTimes: number, message: string) => {
@@ -104,13 +101,4 @@ export const sendAndEnterMessage = (
   } else {
     checkMessageOutput(numberOfTimes, message);
   }
-};
-
-export const connectDisconnectFlow = (cta: string) => {
-  checkMissingElement("empty-message-header");
-  cy.get(`[data-testid=${cta}]`).click();
-  checkElement("empty-message-header");
-  cy.get(`[data-testid="settings-icon"]`).click();
-  cy.get(`[data-testid="disconnect-wallet-cta"]`).click();
-  checkElement("no-wallet-connected-header");
 };

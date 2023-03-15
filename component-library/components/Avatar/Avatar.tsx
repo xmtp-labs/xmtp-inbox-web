@@ -27,7 +27,7 @@ export const Avatar = ({ url, isLoading, address }: AvatarProps) => {
 
   if (url) {
     return (
-      <div>
+      <div data-testid="avatar">
         <div className="w-10 h-10 rounded-full border border-n-80" />
         <img
           className="w-10 h-10 rounded-full z-10 -mt-10"
@@ -39,7 +39,7 @@ export const Avatar = ({ url, isLoading, address }: AvatarProps) => {
   }
 
   return (
-    <div data-testid="connected-footer-image">
+    <div data-testid="avatar">
       <Blockies
         seed={address?.toLowerCase() || ""}
         scale={5}

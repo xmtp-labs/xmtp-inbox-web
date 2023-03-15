@@ -56,6 +56,7 @@ export const MessageInput = ({ onSubmit, isDisabled }: InputProps) => {
         )}>
         <textarea
           id="chat"
+          data-testid="message-input"
           onChange={onChange}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -75,6 +76,7 @@ export const MessageInput = ({ onSubmit, isDisabled }: InputProps) => {
         />
         <div className="flex items-center p-1">
           <IconButton
+            testId="message-input-submit"
             variant="secondary"
             label={<ArrowUpIcon color="white" width="12" />}
             srText="Submit Message"

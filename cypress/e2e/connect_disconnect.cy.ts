@@ -1,9 +1,9 @@
 import {
   checkElement,
-  checkLink,
   disconnectWallet,
   startDemoEnv,
-  connectDisconnectFlow,
+  checkLink,
+  checkMissingElement,
 } from "../test_utils";
 
 describe(
@@ -17,37 +17,79 @@ describe(
   () => {
     beforeEach(() => {
       startDemoEnv();
-      // In connected flow, empty message should render before any tests run
+      // // In connected flow, empty message should render before any tests run
       checkElement("empty-message-header");
     });
 
     it("Shows expected left panel fields when logged in with a connected wallet and no existing messages", () => {
       const elements = [
-        "xmtp-logo",
-        "new-message-cta",
+        "avatar",
+        "messages-icon",
+        "gallery-icon",
+        "settings-icon",
+        "collapse-icon",
+        "icon",
+        "conversation-list-header",
+        "new-message-icon-cta",
         "empty-message-icon",
         "empty-message-header",
         "empty-message-subheader",
-        "connected-footer-primary-text",
-        "connected-footer-secondary-text",
-        "connected-footer-image",
-        "settings-icon",
+        "empty-message-cta",
       ];
 
       elements.forEach((element) => checkElement(element));
     });
 
     it("Shows expected right panel fields when logged in with a connected wallet and no existing messages", () => {
-      checkElement("message-to-key");
-      checkElement("message-to-subtext");
+      const elements = [
+        "learn-more-header",
+        "get-started-header",
+        "message-section-link",
+        "message-icon",
+        "message-header",
+        "message-subheader",
+        "message-arrow",
+        "community-section-link",
+        "community-icon",
+        "community-header",
+        "community-subheader",
+        "community-arrow",
+        "docs-section-link",
+        "docs-icon",
+        "docs-header",
+        "docs-subheader",
+        "docs-arrow",
+        "xmtp-version",
+      ];
+
+      elements.forEach((element) => checkElement(element));
     });
 
-    it("Shows expected fields when clicking on settings icon while connected", () => {
-      cy.get(`[data-testid="settings-icon"]`).click();
+    it("Directs user to expected links", () => {
+      const elementsWithCtas = [
+        {
+          testId: "docs-section-link",
+          link: "https://docs.xmtp.org",
+        },
+        {
+          testId: "community-section-link",
+          link: "https://community.xmtp.org",
+        },
+      ];
+      elementsWithCtas.forEach((element) =>
+        checkLink(element.testId, element.link),
+      );
+    });
+
+    it("Shows expected fields when expanding side nav while connected", () => {
+      cy.get(`[data-testid="collapse-icon"]`).click();
 
       const elements = [
-        "xmtp-version",
-        "copy-address-cta",
+        "Messages",
+        "Gallery",
+        "Settings",
+        "Collapse",
+        "wallet-address",
         "disconnect-wallet-cta",
       ];
       elements.forEach((element) => checkElement(element));
@@ -55,22 +97,30 @@ describe(
       cy.get(`[data-testid="disconnect-wallet-cta"]`).click();
       checkElement("no-wallet-connected-header");
     });
-
-    it("Can reconnect to wallet from connect button", () => {
-      disconnectWallet();
-      connectDisconnectFlow("no-wallet-connected-cta");
+    it("Opens new message view when clicking on connect button from left panel", () => {
+      checkMissingElement("message-input");
+      checkElement("empty-message-cta").click();
+      checkElement("message-input");
     });
-    it("Can reconnect to wallet from sign in with wallet text", () => {
-      disconnectWallet();
-      connectDisconnectFlow("no-wallet-connected-footer-secondary-text");
+    it("Opens new message view when clicking on plus icon from left panel", () => {
+      checkMissingElement("message-input");
+      checkElement("new-message-icon-cta").click();
+      checkElement("message-input");
     });
-    it("Can reconnect to wallet from settings icon", () => {
-      disconnectWallet();
-      connectDisconnectFlow("settings-icon");
+    it("Opens new message view when clicking on new message section within learn more", () => {
+      checkMissingElement("message-input");
+      checkElement("message-section-link").click();
+      checkElement("message-input");
     });
-    it("Can reconnect to wallet from connect section link", () => {
-      disconnectWallet();
-      connectDisconnectFlow("connect-section-link");
+    it("Should show conversation list instead of empty message as soon as user enters something into the input", () => {
+      checkElement("empty-message-header");
+      checkMissingElement("message-input");
+      checkElement("message-section-link").click();
+      checkElement("message-to-input").type("a");
+      checkMissingElement("empty-message-header");
+      cy.get(`[data-testid=conversations-list-panel]`)
+        .children()
+        .should("have.length", 1);
     });
   },
 );
@@ -81,58 +131,15 @@ describe("Disconnected Test Cases", () => {
     checkElement("empty-message-header");
     disconnectWallet();
   });
-  it("Shows expected left panel fields when disconnected from a wallet", () => {
+  it("Shows expected fields when disconnected from a wallet", () => {
     const elements = [
       "xmtp-logo",
-      "no-wallet-connected-icon",
       "no-wallet-connected-header",
       "no-wallet-connected-subheader",
       "no-wallet-connected-cta",
-      "no-wallet-connected-footer-primary-text",
-      "no-wallet-connected-footer-secondary-text",
-      "settings-icon",
+      "no-wallet-connected-subtext",
     ];
 
     elements.forEach((element) => checkElement(element));
-  });
-  it("Shows expected right panel fields when disconnected from a wallet", () => {
-    const elements = [
-      "get-started-header",
-      "get-started-subheader",
-      "connect-icon",
-      "connect-header",
-      "connect-subheader",
-      "connect-arrow",
-      "docs-icon",
-      "docs-header",
-      "docs-subheader",
-      "docs-arrow",
-      "community-icon",
-      "community-header",
-      "community-subheader",
-      "community-arrow",
-      "xmtp-version",
-      "help-cta",
-    ];
-    elements.forEach((element) => checkElement(element));
-  });
-  it("Directs user to expected links", () => {
-    const elementsWithCtas = [
-      {
-        testId: "docs-section-link",
-        link: "https://docs.xmtp.org",
-      },
-      {
-        testId: "community-section-link",
-        link: "https://community.xmtp.org",
-      },
-      {
-        testId: "help-cta",
-        link: "https://blog.xmtp.com/contact/",
-      },
-    ];
-    elementsWithCtas.forEach((element) =>
-      checkLink(element.testId, element.link),
-    );
   });
 });

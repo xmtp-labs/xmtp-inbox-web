@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useEnsAddress, useEnsName } from "wagmi";
-import { address } from "../components/Address";
 import {
   isEnsAddress,
   isValidLongWalletAddress,
   isValidRecipientAddressFormat,
 } from "../helpers";
 import { useXmtpStore } from "../store/xmtp";
+import { address } from "../pages/inbox";
 
 const useWalletAddress = (address?: address | string) => {
   const recipientWalletAddress = useXmtpStore(

@@ -30,6 +30,14 @@ interface InfoCardProps {
    * Are there additional styles?
    */
   styles?: string;
+  /**
+   * What is the test id for this card?
+   */
+  testId?: string;
+  /**
+   * What url should we redirect to?
+   */
+  url?: string;
 }
 
 /**
@@ -56,6 +64,8 @@ export const InfoCard = ({
   isLoading = false,
   onClick = undefined,
   styles,
+  testId,
+  url,
 }: InfoCardProps) => {
   return (
     <div
@@ -69,12 +79,18 @@ export const InfoCard = ({
         "justify-between",
         "border-y",
         "border-gray-300",
+        "cursor-pointer",
         styles || null,
       )}>
       {isLoading ? (
         <ShortCopySkeletonLoader lines={2} />
       ) : (
-        <div className="flex">
+        <a
+          href={url}
+          target="blank"
+          className="flex"
+          onClick={onClick}
+          data-testid={`${testId}-section-link`}>
           <div
             className={classNames(
               getLeftIconBackground(leftIcon),
@@ -82,21 +98,33 @@ export const InfoCard = ({
               "mr-4",
               "rounded-md",
               "h-fit",
-            )}>
+            )}
+            data-testid={`${testId}-icon`}>
             {getLeftIcon(leftIcon)}
           </div>
           <div className="flex flex-col">
-            <div className="font-bold">{header}</div>
-            <p className="text-gray-400 text-md">{subtext}</p>
+            <div className="font-bold" data-testid={`${testId}-header`}>
+              {header}
+            </div>
+            <p
+              className="text-gray-400 text-md"
+              data-testid={`${testId}-subheader`}>
+              {subtext}
+            </p>
           </div>
-        </div>
+        </a>
       )}
       <div>
         {isLoading && onClick ? (
           <IconSkeletonLoader />
         ) : (
-          onClick && (
-            <ChevronRightIcon width="24" color="gray" className="ml-4" />
+          (onClick || url) && (
+            <ChevronRightIcon
+              width="24"
+              color="gray"
+              className="ml-4"
+              data-testid={`${testId}-arrow`}
+            />
           )
         )}
       </div>

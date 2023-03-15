@@ -49,23 +49,51 @@ export const OnboardingStep = ({
     const { header, subheader, cta, subtext } = stepInfo;
 
     return (
-      <div className="bg-white flex flex-col justify-center items-center max-w-sm text-center m-auto h-screen w-screen p-8">
-        {isLoading ? <Spinner /> : <Logo />}
-        <div>
+      <div className="bg-white flex flex-col justify-center items-center max-w-sm text-center m-auto w-screen p-4 h-full">
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <div data-testid="xmtp-logo" className="h-1/2">
+            <Logo />
+          </div>
+        )}
+        <div className="h-1/2">
           <p className="pt-4">{step > 1 ? `Step ${step - 1} of 2` : null}</p>
-          <h1 className="text-4xl font-bold p-4">{header}</h1>
-          <p>{subheader}</p>
+          <h1
+            className="text-4xl font-bold p-4"
+            data-testid={step === 1 && "no-wallet-connected-header"}>
+            {header}
+          </h1>
+          <p data-testid={step === 1 && "no-wallet-connected-subheader"}>
+            {subheader}
+          </p>
           <div className="p-4">
             {cta === ctaStep.ENABLE ? (
-              <PillButton label="Enable XMTP identity" onClick={onEnable} />
+              <PillButton
+                label="Enable XMTP identity"
+                onClick={onEnable}
+                testId="enable-xmtp-identity-cta"
+              />
             ) : cta === ctaStep.CREATE ? (
-              <PillButton label="Create XMTP identity" onClick={onCreate} />
+              <PillButton
+                label="Create XMTP identity"
+                onClick={onCreate}
+                testId="create-xmtp-identity-cta"
+              />
             ) : cta === ctaStep.CONNECT ? (
-              <PillButton label="Connect your wallet" onClick={onConnect} />
+              <PillButton
+                label="Connect your wallet"
+                onClick={onConnect}
+                testId="no-wallet-connected-cta"
+              />
             ) : null}
           </div>
           {subtext ? (
-            <p className="font-bold text-md text-gray-500">{subtext}</p>
+            <p
+              className="font-bold text-md text-gray-500"
+              data-testid={step === 1 && "no-wallet-connected-subtext"}>
+              {subtext}
+            </p>
           ) : (
             <GhostButton
               onClick={onDisconnect}

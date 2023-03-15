@@ -42,11 +42,6 @@ MessagesPageResolvedEnsWithMessages.args = {
   type: "resolved_ens_with_messages",
 };
 
-export const MessagesPageExpandedLeftNav = Template.bind({});
-MessagesPageExpandedLeftNav.args = {
-  type: "left_nav",
-};
-
 export const MessagesPageShortHistory = Template.bind({});
 MessagesPageShortHistory.args = {
   type: "short_history",

@@ -32,6 +32,10 @@ interface IconButtonProps {
    * What should the screen reader text show?
    */
   srText?: string;
+  /**
+   * What is the test id associated with this button?
+   */
+  testId?: string;
 }
 
 const colorClassMapping = {
@@ -59,6 +63,7 @@ export const IconButton = ({
   size = "large",
   srText,
   onClick,
+  testId,
 }: IconButtonProps) => {
   const disabled = isDisabled ? "opacity-50 cursor-not-allowed" : "";
   const sizeClass = sizeClassMapping[size];
@@ -69,6 +74,7 @@ export const IconButton = ({
 
   return (
     <button
+      data-testid={testId}
       type="button"
       onClick={onClick}
       disabled={isDisabled}

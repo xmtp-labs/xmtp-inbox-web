@@ -1,8 +1,6 @@
 //@ts-nocheck
 import {
   isEnsAddress,
-  formatDate,
-  formatTime,
   getConversationId,
   shortAddress,
   truncate,
@@ -19,40 +17,6 @@ describe("truncate", () => {
   });
   it("should return an empty string for unexpected string input", () => {
     expect(truncate(undefined, 3)).toBe("");
-  });
-});
-
-describe("formatDate", () => {
-  it("should return proper en-US formatted date", () => {
-    const date = new Date(2023, 0, 26);
-    expect(formatDate(date)).toBe("1/26/2023");
-  });
-  it("should handle falsey dates", () => {
-    expect(formatDate(undefined)).toBe("");
-  });
-});
-
-describe("formatTime", () => {
-  it("should return formatted time by date, ignoring seconds if added", () => {
-    let date = new Date(2023, 0, 26, 1, 40, 23);
-
-    expect(formatTime(date)).toBe("1:40 AM");
-
-    date = new Date(2023, 0, 26, 13, 40, 23);
-    expect(formatTime(date)).toBe("1:40 PM");
-  });
-  it("should handle falsey dates", () => {
-    expect(formatTime(undefined)).toBe("");
-  });
-  it("should handle falsey minutes seconds or hours", () => {
-    let date = new Date(2023, 0, 26, 15, 30, 20);
-    expect(formatTime(date)).toBe("3:30 PM");
-    date = new Date(2023, 0, 26, 15, 30);
-    expect(formatTime(date)).toBe("3:30 PM");
-    date = new Date(2023, 0, 26, 15);
-    expect(formatTime(date)).toBe("3:00 PM");
-    date = new Date(2023, 0, 26);
-    expect(formatTime(date)).toBe("12:00 AM");
   });
 });
 

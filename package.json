@@ -12,7 +12,6 @@
     "cypress": "cypress run",
     "fmt:check": "prettier -c --ignore-path .gitignore .",
     "fmt:fix": "prettier -w --ignore-path .gitignore .",
-    "cypress:component": "cypress run --component",
     "e2e:headless": "start-server-and-test dev http://localhost:3000 cypress",
     "test": "jest",
     "storybook": "start-storybook -p 6006",

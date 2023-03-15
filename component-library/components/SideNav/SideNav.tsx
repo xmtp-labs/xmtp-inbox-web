@@ -26,6 +26,10 @@ interface SideNav {
    * What is the avatarUrl?
    */
   avatarUrl?: string;
+  /**
+   * What should happen when disconnect is clicked?
+   */
+  onDisconnect?: () => void;
 }
 
 const SideNav = ({
@@ -33,6 +37,7 @@ const SideNav = ({
   displayAddress,
   walletAddress,
   avatarUrl,
+  onDisconnect,
 }: SideNav) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -40,13 +45,29 @@ const SideNav = ({
     if (key === "Collapse") setIsOpen(!isOpen);
   };
   const icons = [
-    <ChatAlt2Icon key="Messages" width={24} className={isOpen ? "mr-4" : ""} />,
-    <SparklesIcon key="Gallery" width={24} className={isOpen ? "mr-4" : ""} />,
-    <CogIcon key="Settings" width={24} className={isOpen ? "mr-4" : ""} />,
+    <ChatAlt2Icon
+      key="Messages"
+      width={24}
+      className={isOpen ? "mr-4" : ""}
+      data-testid="messages-icon"
+    />,
+    <SparklesIcon
+      key="Gallery"
+      width={24}
+      className={isOpen ? "mr-4" : ""}
+      data-testid="gallery-icon"
+    />,
+    <CogIcon
+      key="Settings"
+      width={24}
+      className={isOpen ? "mr-4" : ""}
+      data-testid="settings-icon"
+    />,
     <ChevronDoubleRightIcon
       key="Collapse"
       width={24}
       className={isOpen ? "mr-4" : ""}
+      data-testid="collapse-icon"
     />,
   ];
   const [currentIcon, setCurrentIcon] = useState(icons[0].key);
@@ -78,7 +99,7 @@ const SideNav = ({
         <>
           <div className="flex justify-center items-center h-fit">
             {icon}
-            {isOpen && icon.key}
+            <span data-testId={icon.key}>{isOpen && icon.key}</span>
           </div>
         </>
       </button>
@@ -100,7 +121,7 @@ const SideNav = ({
               {isOpen && (
                 <div className="flex items-center">
                   <div className="flex flex-col px-2 justify-center`">
-                    <span className="font-bold">
+                    <span className="font-bold" data-testid="wallet-address">
                       {shortAddress(displayAddress ?? "")}
                     </span>
                     {walletAddress && (
@@ -121,7 +142,19 @@ const SideNav = ({
           </div>
         </div>
       </div>
-      <div className="pb-4 w-full">{icon}</div>
+      <div className="flex justify-center items-center font-bold w-full pb-4">
+        <div className="pb-4" data-testid="icon">
+          {icon}
+        </div>
+        {isOpen && (
+          <button
+            className="text-center ml-2"
+            data-testid="disconnect-wallet-cta"
+            onClick={onDisconnect}>
+            Disconnect Wallet
+          </button>
+        )}
+      </div>
     </div>
   );
 };

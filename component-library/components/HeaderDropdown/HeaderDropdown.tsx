@@ -41,6 +41,7 @@ export const HeaderDropdown = ({
   return (
     <div
       data-modal-target="headerModalId"
+      data-testId="conversation-list-header"
       className="p-4 w-full border border-r border-gray-100">
       <div className="flex justify-between items-center">
         <span className="flex" onClick={() => setIsOpen(!isOpen)}>
@@ -50,6 +51,7 @@ export const HeaderDropdown = ({
         <IconButton
           onClick={() => onClick?.()}
           label={<PlusIcon color="white" width="16" />}
+          testId="new-message-icon-cta"
         />
       </div>
 

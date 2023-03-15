@@ -54,7 +54,7 @@ export const MessagesPage = ({ type }: MessagesPageProps) => {
           <ConversationList />
         </div>
         <div className="flex flex-col w-full h-full">
-          <LearnMore version="7" />
+          <LearnMore version="7" setStartedFirstMessage={() => {}} />
         </div>
       </div>
     );

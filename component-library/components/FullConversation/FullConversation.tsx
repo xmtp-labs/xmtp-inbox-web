@@ -25,9 +25,11 @@ export const FullConversation = ({
   }
 
   return (
-    <div className="w-full h-full flex flex-col-reverse p-4 ">
-      {messages}
-      <div className="text-gray-300 font-bold text-sm w-full text-center">
+    <div className="w-full h-full flex flex-col-reverse p-4">
+      <div data-testid="message-tile-container">{messages}</div>
+      <div
+        className="text-gray-300 font-bold text-sm w-full text-center"
+        data-testid="message-beginning-text">
         This is the beginning of the conversation
       </div>
     </div>

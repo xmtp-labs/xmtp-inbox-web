@@ -36,6 +36,10 @@ interface PillButtonProps {
    * Is there an icon that should override the default icon?
    */
   iconOverride?: React.ReactNode;
+  /**
+   * What is the test id?
+   */
+  testId?: React.ReactNode;
 }
 
 const colorClassMapping = {
@@ -69,6 +73,7 @@ export const PillButton = ({
   srText = "",
   onClick,
   iconOverride,
+  testId,
 }: PillButtonProps) => {
   const disabled = isDisabled ? "opacity-50 cursor-not-allowed" : "";
   const sizeClass = sizeClassMapping[size];
@@ -82,6 +87,7 @@ export const PillButton = ({
 
   return (
     <button
+      data-testid={testId}
       type="button"
       onClick={onClick}
       disabled={isDisabled}

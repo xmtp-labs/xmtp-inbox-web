@@ -48,7 +48,10 @@ export const MessagePreviewCard = ({
   onClick,
   isSelected,
 }: MessagePreviewCard) => {
-  if (!text && !isLoading) {
+  const isFirstMessage =
+    text === "New message" && displayAddress === "New recipient";
+
+  if (!text && !isFirstMessage && !isLoading) {
     return null;
   }
   return (

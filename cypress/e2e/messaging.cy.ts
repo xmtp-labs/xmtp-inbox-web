@@ -19,6 +19,7 @@ describe(
       startDemoEnv();
       // In connected flow, empty message should render before any tests run
       checkElement("empty-message-header");
+      checkElement("empty-message-cta").click();
     });
     const testUserWithXmtpAccount =
       "0x78BfD39428C32Be149892d64bEE6C6f90aedEec1";
@@ -58,7 +59,6 @@ describe(
         "have.text",
         "Please enter a valid wallet address",
       );
-      checkMissingElement("message-input");
     });
   },
 );

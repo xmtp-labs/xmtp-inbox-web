@@ -4,7 +4,7 @@ import { getConversationId, shortAddress, truncate } from "../helpers";
 import { useXmtpStore } from "../store/xmtp";
 import { fetchEnsName } from "@wagmi/core";
 import { useAccount } from "wagmi";
-import { address } from "../components/Address";
+import { address } from "../pages/inbox";
 
 let latestMsgId: string;
 
