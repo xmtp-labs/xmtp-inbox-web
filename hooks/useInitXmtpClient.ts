@@ -29,7 +29,8 @@ const useInitXmtpClient = () => {
           });
           storeKeys(address, keys);
         }
-        const xmtp = await Client.create(null, {
+        // const xmtp = await Client.create(null, {
+        const xmtp = await Client.create(signer, {
           env: getEnv(),
           appVersion: getAppVersion(),
           privateKeyOverride: keys,

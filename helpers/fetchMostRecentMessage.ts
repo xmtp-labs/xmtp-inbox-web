@@ -4,6 +4,7 @@ import { getConversationId } from "./string";
 const fetchMostRecentMessage = async (
   convo: Conversation,
 ): Promise<{ key: string; message?: DecodedMessage }> => {
+  console.log('fetchign most recent message')
   const key = getConversationId(convo);
   const newMessages = await convo?.messages({
     limit: 1,
@@ -11,8 +12,10 @@ const fetchMostRecentMessage = async (
   });
 
   if (!newMessages?.length) {
+    console.log('no recent message')
     return { key };
   }
+    console.log('message found')
   return { key, message: newMessages[0] };
 };
 

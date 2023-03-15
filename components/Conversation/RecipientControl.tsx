@@ -65,6 +65,7 @@ const RecipientControl = ({
         !conversations.get(recipientWalletAddress) &&
         !conversations.get(conversationId ?? "")
       ) {
+        console.log("Creating convo 1");
         const conversation =
           conversationIdOnXmtp &&
           conversationIdOnXmtp !== recipientWalletAddress
@@ -79,6 +80,7 @@ const RecipientControl = ({
                 recipientWalletAddress,
               );
         if (conversation) {
+          console.log("Create successful");
           conversations.set(getConversationId(conversation), conversation);
           setConversations(new Map(conversations));
         }

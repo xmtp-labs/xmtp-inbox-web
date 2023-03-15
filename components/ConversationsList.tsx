@@ -47,6 +47,7 @@ const ConversationsList = (): JSX.Element => {
             const recipientAddress = convoKey.split("/")[0];
             const canMessage = await client?.canMessage(recipientAddress);
             if (canMessage) {
+              console.log("Creating convo 2")
               const conversation = await client?.conversations?.newConversation(
                 recipientAddress,
               );
