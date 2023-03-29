@@ -68,6 +68,7 @@ const Conversation = (): JSX.Element => {
             fetchNextMessages={fetchNextMessages}
             messages={messages ?? []}
             hasMore={hasMore}
+            onSend={sendMessage}
           />
         </div>
       </div>

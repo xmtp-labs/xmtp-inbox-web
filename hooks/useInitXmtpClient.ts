@@ -1,6 +1,7 @@
 import { Client } from "@xmtp/xmtp-js";
 import { useEffect, useState } from "react";
 import { useAccount, useSigner } from "wagmi";
+import { ReactionCodec } from "../codecs/Reaction";
 import { address } from "../components/Address";
 import { getAppVersion, getEnv, loadKeys, storeKeys } from "../helpers";
 import { useConversationCache } from "../store/conversationCache";
@@ -33,6 +34,7 @@ const useInitXmtpClient = () => {
           env: getEnv(),
           appVersion: getAppVersion(),
           privateKeyOverride: keys,
+          codecs: [new ReactionCodec()],
         });
         if (conversationExports && conversationExports.length) {
           // Preload the client with conversations from the cache

@@ -5,6 +5,7 @@ import { classNames, formatDate, getConversationId } from "../../helpers";
 import Avatar from "../Avatar";
 import { useXmtpStore } from "../../store/xmtp";
 import { useAccount } from "wagmi";
+import { ContentTypeReaction } from "../../codecs/Reaction";
 
 type ConversationTileProps = {
   conversation: Conversation;
@@ -91,10 +92,18 @@ const ConversationTile = ({
             {formatDate(latestMessage?.sent)}
           </span>
         </div>
-        <span className="text-sm text-gray-500 line-clamp-1 break-all">
-          {address === latestMessage?.senderAddress && "You: "}{" "}
-          {latestMessage?.content}
-        </span>
+        {latestMessage?.contentType?.typeId === ContentTypeReaction?.typeId ? (
+          <span className="text-sm text-gray-500 line-clamp-1 break-all">
+            {address === latestMessage?.senderAddress
+              ? `You reacted with ` + latestMessage?.content?.emoji
+              : `Reacted ` + latestMessage?.content?.emoji}
+          </span>
+        ) : (
+          <span className="text-sm text-gray-500 line-clamp-1 break-all">
+            {address === latestMessage?.senderAddress && "You: "}{" "}
+            {latestMessage?.content.toString()}
+          </span>
+        )}
       </div>
     </div>
   );
