@@ -1,50 +1,35 @@
-import { SortDirection } from "@xmtp/xmtp-js";
-import { useEffect, useState } from "react";
+import { DecodedMessage, SortDirection } from "@xmtp/xmtp-js";
+import { useCallback } from "react";
 import { MESSAGE_LIMIT } from "../helpers";
 import { useXmtpStore } from "../store/xmtp";
+import { useMessages } from "@xmtp/react-sdk";
 
-const useGetMessages = (conversationId: string, endTime?: Date) => {
-  const convoMessages = useXmtpStore((state) =>
+const useGetMessages = (conversationId: string) => {
+  const messages = useXmtpStore((state) =>
     state.convoMessages.get(conversationId),
   );
   const conversation = useXmtpStore((state) =>
     state.conversations.get(conversationId),
   );
   const addMessages = useXmtpStore((state) => state.addMessages);
-  const [hasMore, setHasMore] = useState<Map<string, boolean>>(new Map());
 
-  useEffect(() => {
-    if (!conversation) {
-      return;
-    }
+  const onMessages = useCallback(
+    (messages: DecodedMessage[]) => {
+      console.log(messages);
+      addMessages(conversationId, messages);
+    },
+    [addMessages, conversationId],
+  );
 
-    const loadMessages = async () => {
-      const newMessages = await conversation.messages({
-        direction: SortDirection.SORT_DIRECTION_DESCENDING,
-        limit: MESSAGE_LIMIT,
-        endTime: endTime,
-      });
-      if (newMessages.length > 0) {
-        addMessages(conversationId, newMessages);
-        if (newMessages.length < MESSAGE_LIMIT) {
-          hasMore.set(conversationId, false);
-          setHasMore(new Map(hasMore));
-        } else {
-          hasMore.set(conversationId, true);
-          setHasMore(new Map(hasMore));
-        }
-      } else {
-        hasMore.set(conversationId, false);
-        setHasMore(new Map(hasMore));
-      }
-    };
-    loadMessages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversation, conversationId, endTime]);
+  const { next } = useMessages(conversation, {
+    direction: SortDirection.SORT_DIRECTION_DESCENDING,
+    limit: MESSAGE_LIMIT,
+    onMessages,
+  });
 
   return {
-    convoMessages,
-    hasMore: hasMore.get(conversationId) ?? false,
+    messages,
+    next,
   };
 };
 

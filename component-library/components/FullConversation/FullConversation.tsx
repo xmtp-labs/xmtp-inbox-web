@@ -2,15 +2,14 @@ import React from "react";
 import { MessageSkeletonLoader } from "../Loaders/SkeletonLoaders/MessageSkeletonLoader";
 import { useTranslation } from "react-i18next";
 
-interface FullConversationProps {
-  messages?: Array<JSX.Element>;
+type FullConversationProps = React.PropsWithChildren & {
   isLoading?: boolean;
-}
+};
 
-export const FullConversation = ({
-  messages = [],
+export const FullConversation: React.FC<FullConversationProps> = ({
+  children,
   isLoading = false,
-}: FullConversationProps) => {
+}) => {
   const { t } = useTranslation();
   if (isLoading) {
     return (
@@ -26,7 +25,7 @@ export const FullConversation = ({
     <div
       data-testid="message-tile-container"
       className="w-full h-full flex flex-col-reverse pt-8 px-4 md:px-8">
-      {messages}
+      {children}
       <div
         className="text-gray-500 font-regular text-sm w-full py-2 text-center"
         data-testid="message-beginning-text">
