@@ -34,7 +34,6 @@ export const FullConversationWrapper = () => {
       className="w-full h-full flex flex-col flex-col-reverse overflow-auto">
       <FullConversation isLoading={loadingConversations}>
         <Virtuoso
-          className="h-full"
           firstItemIndex={firstItemIndex}
           initialTopMostItemIndex={MESSAGE_LIMIT - 1}
           data={messages}

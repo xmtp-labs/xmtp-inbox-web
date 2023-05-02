@@ -1,5 +1,5 @@
 import { DecodedMessage, SortDirection } from "@xmtp/xmtp-js";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { MESSAGE_LIMIT } from "../helpers";
 import { useXmtpStore } from "../store/xmtp";
 import { useMessages } from "@xmtp/react-sdk";
@@ -21,11 +21,16 @@ const useGetMessages = (conversationId: string) => {
     [addMessages, conversationId],
   );
 
-  const { next } = useMessages(conversation, {
-    direction: SortDirection.SORT_DIRECTION_DESCENDING,
-    limit: MESSAGE_LIMIT,
-    onMessages,
-  });
+  const messageOptions = useMemo(
+    () => ({
+      direction: SortDirection.SORT_DIRECTION_DESCENDING,
+      limit: MESSAGE_LIMIT,
+      onMessages,
+    }),
+    [onMessages],
+  );
+
+  const { next } = useMessages(conversation, messageOptions);
 
   return {
     messages,
