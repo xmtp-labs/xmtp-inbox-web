@@ -78,6 +78,16 @@ const SideNav = ({
     setIsDialogOpen(!isDialogOpen);
   };
 
+  const [copied, setCopied] = useState(false);
+
+  function copyAddress() {
+    if (walletAddress) {
+      navigator.clipboard.writeText(walletAddress);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1000);
+    }
+  }
+
   const icons = [
     <ChatAlt2Icon
       key={t("menu.messages_header")}
@@ -175,7 +185,10 @@ const SideNav = ({
               {isOpen && (
                 <div className="flex items-center">
                   <div className="flex flex-col px-2 justify-center">
-                    <span className="font-bold" data-testid="wallet-address">
+                    <span
+                      className="font-bold"
+                      data-testid="wallet-address"
+                      onClick={copyAddress}>
                       {shortAddress(displayAddress ?? "")}
                     </span>
                     {walletAddress && displayAddress !== walletAddress && (
@@ -183,6 +196,8 @@ const SideNav = ({
                         {shortAddress(walletAddress)}
                       </span>
                     )}
+
+                    {copied && <small>Copied!</small>}
                   </div>
                 </div>
               )}
