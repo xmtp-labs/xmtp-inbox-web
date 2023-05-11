@@ -54,7 +54,7 @@ export const MessagePreviewCardWrapper = ({
       key={previewMessage?.id}
       text={
         previewMessage?.content ? (
-          <MessageContentWrapper content={previewMessage?.content} />
+          <MessageContentWrapper message={previewMessage} />
         ) : undefined
       }
       datetime={previewMessage?.sent}

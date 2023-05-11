@@ -11,6 +11,9 @@ import {
 import { useClient, useCanMessage } from "@xmtp/react-sdk";
 import { mockConnector } from "../helpers/mockConnector";
 import { Signer } from "ethers";
+import { GroupChatInviteCodec } from "../lib/GroupChatInviteCodec";
+import { GroupChatMemberAddedCodec } from "../lib/GroupChatMemberAddedCodec";
+import { GroupChatMemberRemovedCodec } from "../lib/GroupChatMemberRemovedCodec";
 
 type ClientStatus = "new" | "created" | "enabled";
 
@@ -179,9 +182,17 @@ const useInitXmtpClient = () => {
         }
         // initialize client
         await initialize({ keys, options: clientOptions, signer });
+
         onboardingRef.current = false;
       }
     };
+
+    if (client) {
+      client.registerCodec(new GroupChatInviteCodec());
+      client.registerCodec(new GroupChatMemberAddedCodec());
+      client.registerCodec(new GroupChatMemberRemovedCodec());
+    }
+
     updateStatus();
   }, [client, signer]);
 

@@ -55,14 +55,6 @@ export const AddressInputWrapper = () => {
           ? getRecipientInputSubtext(recipientInputMode, recipientEnteredValue)
           : ""
       }
-      resolvedAddress={{
-        displayAddress:
-          ensName ??
-          (size[0] < 700
-            ? shortAddress(recipientWalletAddress)
-            : recipientWalletAddress),
-        walletAddress: ensName ? recipientWalletAddress : "",
-      }}
       onChange={setRecipientEnteredValue}
       isLoading={
         RecipientInputMode.FindingEntry === recipientInputMode ||

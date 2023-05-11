@@ -12,6 +12,7 @@ export const getEnv = (): "dev" | "production" | "local" => {
 };
 
 export const isAppEnvDemo = (): boolean => {
+  return true;
   return (
     window.location.hostname.includes(ENVIRONMENT.DEMO) ||
     // Added for E2E testing

@@ -25,6 +25,8 @@ interface XmtpState {
   resetXmtpState: () => void;
   startedFirstMessage: boolean;
   setStartedFirstMessage: (startedFirstMessage: boolean) => void;
+  recipientAddresses: string[];
+  setRecipientAddresses: (recipientAddresses: string[]) => void;
 }
 
 export const useXmtpStore = create<XmtpState>((set) => ({
@@ -81,9 +83,13 @@ export const useXmtpStore = create<XmtpState>((set) => ({
         conversationId: undefined,
         startedFirstMessage: false,
         recipientInputMode: RecipientInputMode.InvalidEntry,
+        recipientAddresses: [],
       };
     }),
   startedFirstMessage: false,
   setStartedFirstMessage: (startedFirstMessage) =>
     set(() => ({ startedFirstMessage })),
+  recipientAddresses: [],
+  setRecipientAddresses: (recipientAddresses) =>
+    set(() => ({ recipientAddresses })),
 }));

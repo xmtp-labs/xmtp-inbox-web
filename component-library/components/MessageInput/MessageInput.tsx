@@ -16,13 +16,13 @@ interface InputProps {
   /**
    * Rerender component?
    */
-  conversationId?: string;
+  recipientAddresses?: string[];
 }
 
 export const MessageInput = ({
   onSubmit,
   isDisabled,
-  conversationId,
+  recipientAddresses,
 }: InputProps) => {
   const { t } = useTranslation();
   let textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -54,7 +54,7 @@ export const MessageInput = ({
   useEffect(() => {
     textAreaRef.current?.focus();
     setValue("");
-  }, [conversationId]);
+  }, [recipientAddresses]);
 
   return (
     <form>
@@ -84,7 +84,10 @@ export const MessageInput = ({
               e.preventDefault();
               if (value) {
                 onSubmit?.(value);
-                setValue("");
+
+                if (recipientAddresses && recipientAddresses.length > 0) {
+                  setValue("");
+                }
               }
             }
           }}
@@ -108,7 +111,11 @@ export const MessageInput = ({
                 textAreaRef.current?.focus();
               }
             }}
-            isDisabled={!value || isDisabled}
+            isDisabled={
+              !value ||
+              isDisabled ||
+              (recipientAddresses && recipientAddresses.length === 0)
+            }
           />
         </div>
       </div>
