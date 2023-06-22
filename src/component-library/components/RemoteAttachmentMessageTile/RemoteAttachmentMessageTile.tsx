@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import type {
   Attachment,
   RemoteAttachment,
-} from "xmtp-content-type-remote-attachment";
-import { RemoteAttachmentCodec } from "xmtp-content-type-remote-attachment";
+} from "@xmtp/content-type-remote-attachment";
+import { RemoteAttachmentCodec } from "@xmtp/content-type-remote-attachment";
 import { useClient } from "@xmtp/react-sdk";
 import Zoom from "react-medium-image-zoom";
 import { useTranslation } from "react-i18next";

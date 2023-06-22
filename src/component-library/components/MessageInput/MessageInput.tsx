@@ -1,6 +1,6 @@
 import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { Attachment } from "xmtp-content-type-remote-attachment";
+import type { Attachment } from "@xmtp/content-type-remote-attachment";
 import {
   ArrowUpIcon,
   DocumentIcon,

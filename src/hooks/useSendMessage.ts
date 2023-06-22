@@ -4,15 +4,11 @@ import {
   useSendMessage as useSendMessageHook,
   useStartConversation,
 } from "@xmtp/react-sdk";
-import type {
-  Attachment,
-  RemoteAttachment,
-} from "xmtp-content-type-remote-attachment";
 import {
   ContentTypeRemoteAttachment,
   RemoteAttachmentCodec,
   AttachmentCodec,
-} from "xmtp-content-type-remote-attachment";
+} from "@xmtp/content-type-remote-attachment";
 import { Web3Storage } from "web3.storage";
 import { useTranslation } from "react-i18next";
 import Upload from "../helpers/classes/Upload";

@@ -5,7 +5,7 @@ import type { Signer } from "ethers";
 import {
   AttachmentCodec,
   RemoteAttachmentCodec,
-} from "xmtp-content-type-remote-attachment";
+} from "@xmtp/content-type-remote-attachment";
 import {
   getAppVersion,
   getEnv,

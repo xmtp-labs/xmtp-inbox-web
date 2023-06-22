@@ -1,4 +1,4 @@
-import type { Attachment } from "xmtp-content-type-remote-attachment";
+import type { Attachment } from "@xmtp/content-type-remote-attachment";
 import { MessageInput } from "../component-library/components/MessageInput/MessageInput";
 import { RecipientInputMode } from "../helpers";
 import useGetRecipientInputMode from "../hooks/useGetRecipientInputMode";

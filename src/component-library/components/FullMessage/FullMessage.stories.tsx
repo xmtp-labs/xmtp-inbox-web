@@ -1,5 +1,5 @@
 import type { ComponentStory, ComponentMeta } from "@storybook/react";
-import type { RemoteAttachment } from "xmtp-content-type-remote-attachment";
+import type { RemoteAttachment } from "@xmtp/content-type-remote-attachment";
 import { FullMessage } from "./FullMessage";
 import { shortAddress } from "../../../helpers";
 import MessageContentController from "../../../controllers/MessageContentController";
