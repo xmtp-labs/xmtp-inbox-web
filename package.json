@@ -38,6 +38,7 @@
     "@typescript-eslint/parser": "^5.59.9",
     "@vitejs/plugin-react": "^4.0.0",
     "@wagmi/core": "^0.10.11",
+    "@xmtp/content-type-reaction": "^1.0.0",
     "@xmtp/content-type-remote-attachment": "^1.0.7",
     "@xmtp/react-sdk": "^1.0.0-preview.39",
     "buffer": "^6.0.3",

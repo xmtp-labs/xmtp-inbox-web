@@ -6,6 +6,8 @@ import {
   AttachmentCodec,
   RemoteAttachmentCodec,
 } from "@xmtp/content-type-remote-attachment";
+import { ReactionCodec } from "@xmtp/content-type-reaction";
+import { mockConnector } from "../helpers/mockConnector";
 import {
   getAppVersion,
   getEnv,
@@ -13,7 +15,6 @@ import {
   loadKeys,
   storeKeys,
 } from "../helpers";
-import { mockConnector } from "../helpers/mockConnector";
 
 type ClientStatus = "new" | "created" | "enabled";
 
@@ -42,7 +43,11 @@ const clientOptions = {
   apiUrl: import.meta.env.VITE_XMTP_API_URL,
   env: getEnv(),
   appVersion: getAppVersion(),
-  codecs: [new AttachmentCodec(), new RemoteAttachmentCodec()],
+  codecs: [
+    new AttachmentCodec(),
+    new RemoteAttachmentCodec(),
+    new ReactionCodec(),
+  ],
 };
 
 const useInitXmtpClient = () => {
