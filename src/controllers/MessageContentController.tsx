@@ -1,55 +1,36 @@
-import { Interweave } from "interweave";
-import { EmailMatcher, UrlMatcher } from "interweave-autolink";
-import { EmojiMatcher, useEmojiData } from "interweave-emoji";
-import type { MouseEvent } from "react";
-import type { RemoteAttachment } from "@xmtp/content-type-remote-attachment";
+import type React from "react";
+import { ContentTypeRemoteAttachment } from "@xmtp/content-type-remote-attachment";
+import type { DecodedMessage } from "@xmtp/react-sdk";
 import RemoteAttachmentMessageTile from "../component-library/components/RemoteAttachmentMessageTile/RemoteAttachmentMessageTile";
+import TextMessageTile from "../component-library/components/TextMessageTile/TextMessageTile";
 
-interface MessageContentControllerProps {
-  content: undefined | string | RemoteAttachment;
+type MessageContentControllerProps = {
+  message: DecodedMessage;
   isSelf: boolean;
   isLoading: boolean;
   isError: boolean;
-}
+};
 
-const MessageContentController = ({
-  content,
+const MessageContentController: React.FC<MessageContentControllerProps> = ({
+  message,
   isSelf,
   isLoading,
   isError,
-}: MessageContentControllerProps) => {
-  const [, source] = useEmojiData({
-    compact: false,
-    shortcodes: ["emojibase"],
-  });
-
-  return content === undefined || typeof content === "string" ? (
-    <span className="interweave-content" data-testid="message-tile-text">
-      <Interweave
-        content={content ?? ""}
-        newWindow
-        escapeHtml
-        onClick={(event: MouseEvent<HTMLDivElement>) => event.stopPropagation()}
-        matchers={[
-          new UrlMatcher("url"),
-          new EmojiMatcher("emoji", {
-            convertEmoticon: true,
-            convertShortcode: true,
-            renderUnicode: true,
-          }),
-          new EmailMatcher("email"),
-        ]}
-        emojiSource={source}
+}) => {
+  // remote attachments content type
+  if (ContentTypeRemoteAttachment.sameAs(message.contentType)) {
+    return (
+      <RemoteAttachmentMessageTile
+        content={message.content}
+        isSelf={isSelf}
+        isLoading={isLoading}
+        isError={isError}
       />
-    </span>
-  ) : content.url ? (
-    <RemoteAttachmentMessageTile
-      content={content}
-      isSelf={isSelf}
-      isLoading={isLoading}
-      isError={isError}
-    />
-  ) : null;
+    );
+  }
+
+  // default (text) content type
+  return <TextMessageTile content={message.content} />;
 };
 
 export default MessageContentController;

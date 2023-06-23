@@ -1,7 +1,10 @@
 import type { ReactElement } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { DateDivider } from "../DateDivider/DateDivider";
+import type { DecodedMessage } from "@xmtp/react-sdk";
+import type { Reaction } from "@xmtp/content-type-reaction";
 import { classNames } from "../../../helpers";
+import { DateDivider } from "../DateDivider/DateDivider";
 
 interface MessageSender {
   displayAddress: string;
@@ -29,6 +32,10 @@ interface FullMessageProps {
    * Does this message have an error?
    */
   isError?: boolean;
+  /**
+   * Reactions to message
+   */
+  reactions?: Map<string, DecodedMessage>;
 }
 
 export const FullMessage = ({
@@ -37,6 +44,7 @@ export const FullMessage = ({
   datetime,
   showDateDivider = false,
   isError,
+  reactions,
 }: FullMessageProps) => {
   const { t } = useTranslation();
   const isOutgoingMessage = from.isSelf;
@@ -44,6 +52,27 @@ export const FullMessage = ({
   const incomingMessageBackgroundStyles = "bg-gray-200 rounded-br-lg pl-2";
   const outgoingMessageBackgroundStyles =
     "bg-indigo-600 text-white rounded-bl-lg message-sender";
+
+  const groupedReactions = useMemo(
+    () =>
+      Array.from(reactions?.values() ?? []).reduce(
+        (result, message) => {
+          const reaction = message.content as Reaction;
+          return {
+            ...result,
+            [reaction.content]: result[reaction.content]
+              ? result[reaction.content] + 1
+              : 1,
+          };
+        },
+        {} as {
+          [key: string]: number;
+        },
+      ),
+    [reactions],
+  );
+
+  console.log("groupedReactions", groupedReactions);
 
   return (
     <div

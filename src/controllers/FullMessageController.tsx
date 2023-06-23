@@ -1,4 +1,5 @@
 import { useEnsName } from "wagmi";
+import type { DecodedMessage } from "@xmtp/react-sdk";
 import { useClient } from "@xmtp/react-sdk";
 import { FullMessage } from "../component-library/components/FullMessage/FullMessage";
 import { isValidLongWalletAddress, shortAddress } from "../helpers";
@@ -7,20 +8,15 @@ import MessageContentController from "./MessageContentController";
 import useSendMessage from "../hooks/useSendMessage";
 import { useXmtpStore } from "../store/xmtp";
 
-interface FullMessageControllerProps {
-  msg: {
-    id: string;
-    senderAddress: string;
-    content: string;
-    sent: Date;
-  };
+type FullMessageControllerProps = {
+  msg: DecodedMessage;
   idx: number;
-}
+};
 
-export const FullMessageController = ({
+export const FullMessageController: React.FC<FullMessageControllerProps> = ({
   msg,
   idx,
-}: FullMessageControllerProps) => {
+}) => {
   const { client } = useClient();
 
   // Get ENS if exists from full address
@@ -30,13 +26,15 @@ export const FullMessageController = ({
   });
   const conversationId = useXmtpStore((state) => state.conversationId);
 
+  const reactions = useXmtpStore((state) => state.reactions);
+
   const { loading, error } = useSendMessage(conversationId as address);
 
   return (
     <FullMessage
       text={
         <MessageContentController
-          content={msg.content}
+          message={msg}
           isSelf={client?.address === msg.senderAddress}
           isLoading={loading}
           isError={!!error}
@@ -49,6 +47,7 @@ export const FullMessageController = ({
         isSelf: client?.address === msg.senderAddress,
       }}
       datetime={msg.sent}
+      reactions={reactions.get(msg.id)}
     />
   );
 };
