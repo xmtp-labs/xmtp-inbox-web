@@ -57,6 +57,10 @@ type UnstoppableDomainsDomainResponse = {
   };
 };
 
+type UnstoppableDomainsBulkDomainResponse = {
+  data: Array<UnstoppableDomainsDomainResponse>;
+};
+
 export const fetchUnsName = async (
   address: string | undefined,
 ): Promise<string | null> => {
@@ -82,13 +86,55 @@ export const fetchUnsName = async (
   }
 };
 
+export const fetchUnsNames = async (
+  addresses: string[],
+): Promise<{ [key: string]: string } | null> => {
+  if (import.meta.env.VITE_UNS_TOKEN && addresses?.length) {
+    const result: { [key: string]: string } = {};
+    if (addresses.length < 2) {
+      const domain = await fetchUnsName(addresses[0]);
+      if (domain) {
+        result[addresses[0]] = domain;
+      }
+      return result;
+    }
+    try {
+      const response = await fetch(
+        `https://api.unstoppabledomains.com/resolve/reverse/query`,
+        {
+          method: "POST",
+          body: JSON.stringify({ addresses }),
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_UNS_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      const domainJson = (
+        (await response.json()) as UnstoppableDomainsBulkDomainResponse
+      ).data;
+      domainJson.forEach((domain) => {
+        if (domain.meta?.owner) {
+          result[domain.meta.owner] = domain.meta?.domain as string;
+        }
+      });
+      return result;
+    } catch {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
 export const fetchUnsAddress = async (
   name: string | undefined,
 ): Promise<string | null> => {
   if (import.meta.env.VITE_UNS_TOKEN && name) {
     try {
       const response = await fetch(
-        `https://resolve.unstoppabledomains.com/domains/${name}`,
+        `https://api.unstoppabledomains.com/resolve/domains/${name}`,
         {
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_UNS_TOKEN}`,

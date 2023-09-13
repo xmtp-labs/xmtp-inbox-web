@@ -14,10 +14,12 @@ import { useXmtpStore } from "../store/xmtp";
 
 interface MessagePreviewCardControllerProps {
   convo: CachedConversation;
+  unsNames?: { [key: string]: string } | null;
 }
 
 export const MessagePreviewCardController = ({
   convo,
+  unsNames,
 }: MessagePreviewCardControllerProps) => {
   const { t } = useTranslation();
   const lastMessage = useLastMessage(convo.topic);
@@ -40,20 +42,23 @@ export const MessagePreviewCardController = ({
   });
 
   // Get UNS name
-  const [previewUnsName, setPreviewUnsName] = useState<string | null>();
+  const previewUnsName =
+    unsNames && convo?.peerAddress.toLowerCase() in unsNames
+      ? unsNames[convo?.peerAddress.toLowerCase()]
+      : null;
 
-  useEffect(() => {
-    const getUns = async () => {
-      if (isValidLongWalletAddress(convo?.peerAddress || "")) {
-        const name = await fetchUnsName(convo?.peerAddress);
-        setPreviewUnsName(name);
-      } else {
-        setPreviewUnsName(null);
-      }
-    };
+  // useEffect(() => {
+  //   const getUns = async () => {
+  //     if (isValidLongWalletAddress(convo?.peerAddress || "")) {
+  //       const name = await fetchUnsName(convo?.peerAddress);
+  //       setPreviewUnsName(name);
+  //     } else {
+  //       setPreviewUnsName(null);
+  //     }
+  //   };
 
-    void getUns();
-  }, [convo?.peerAddress]);
+  //   void getUns();
+  // }, [convo?.peerAddress]);
 
   // Helpers
   const isSelected = conversationTopic === convo.topic;
