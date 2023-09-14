@@ -4,39 +4,21 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { datadogRum } from "@datadog/browser-rum";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useDb } from "@xmtp/react-sdk";
 import { initialize } from "../helpers/i18n";
-import { ENVIRONMENT, isAppEnvDemo } from "../helpers";
+import { ENVIRONMENT } from "../helpers";
 import Inbox from "../pages/inbox";
 import Index from "../pages/index";
 import Dm from "../pages/dm";
 
 const AppController: React.FC = () => {
-  const [initializedI18n, setInitializedI18n] = useState(false);
   const [initialized, setInitialized] = useState(false);
-  const { clearCache } = useDb();
   useEffect(() => {
     const initI18n = async () => {
       await initialize();
-      setInitializedI18n(true);
+      setInitialized(true);
     };
     void initI18n();
   }, []);
-
-  // clear the cache if in demo mode
-  useEffect(() => {
-    const initAppDemoDb = async () => {
-      if (isAppEnvDemo()) {
-        if (initializedI18n) {
-          await clearCache();
-          setInitialized(true);
-        }
-      } else {
-        setInitialized(true);
-      }
-    };
-    void initAppDemoDb();
-  }, [clearCache, initializedI18n]);
 
   useEffect(() => {
     /* The initialization below will only happen 

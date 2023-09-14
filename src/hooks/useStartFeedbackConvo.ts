@@ -6,12 +6,8 @@ import { findFeedbackConversation } from "../helpers/findFeedbackConversation";
 import useListConversations from "./useListConversations";
 
 const useStartFeedbackConvo = () => {
-  const { conversations } = useListConversations();
+  const { conversations, isLoaded } = useListConversations();
   const { startConversation } = useStartConversation();
-
-  const loadingConversations = useXmtpStore(
-    (state) => state.loadingConversations,
-  );
 
   const setRecipientWalletAddress = useXmtpStore(
     (state) => state.setRecipientWalletAddress,
@@ -27,7 +23,7 @@ const useStartFeedbackConvo = () => {
 
   useEffect(() => {
     const startFeedbackConvo = async () => {
-      if (!loadingConversations && !feedbackConversation) {
+      if (isLoaded && !feedbackConversation) {
         // start the conversation, but don't send an initial message
         const { cachedConversation } = await startConversation(
           XMTP_FEEDBACK_ADDRESS,
@@ -35,7 +31,7 @@ const useStartFeedbackConvo = () => {
         );
 
         if (cachedConversation) {
-          setConversationTopic(cachedConversation.topic);
+          // set recipient address, which will set the conversation topic
           setRecipientWalletAddress(XMTP_FEEDBACK_ADDRESS);
         }
       }
@@ -43,7 +39,7 @@ const useStartFeedbackConvo = () => {
     void startFeedbackConvo();
   }, [
     feedbackConversation,
-    loadingConversations,
+    isLoaded,
     setConversationTopic,
     setRecipientWalletAddress,
     startConversation,

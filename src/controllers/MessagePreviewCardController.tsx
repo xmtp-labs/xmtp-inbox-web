@@ -31,10 +31,6 @@ export const MessagePreviewCardController = ({
   );
   const conversationTopic = useXmtpStore((state) => state.conversationTopic);
 
-  const setConversationTopic = useXmtpStore(
-    (state) => state.setConversationTopic,
-  );
-
   // Get ENS name and avatar from Wagmi
   const { data: previewEnsName } = useEnsName({
     address: convo?.peerAddress as address,
@@ -65,18 +61,11 @@ export const MessagePreviewCardController = ({
   const onConvoClick = useCallback(
     (conversation: CachedConversation) => {
       if (recipientWalletAddress !== conversation.peerAddress) {
+        // this will also update the conversation topic
         setRecipientWalletAddress(conversation.peerAddress);
       }
-      if (conversationTopic !== conversation.topic) {
-        setConversationTopic(conversation.topic);
-      }
     },
-    [
-      conversationTopic,
-      recipientWalletAddress,
-      setConversationTopic,
-      setRecipientWalletAddress,
-    ],
+    [recipientWalletAddress, setRecipientWalletAddress],
   );
 
   const conversationDomain = convo?.context?.conversationId.split("/")[0] ?? "";

@@ -13,7 +13,7 @@ const useListConversations = () => {
     }
   }, []);
 
-  const { conversations, isLoading, error } = useConversations();
+  const { conversations, isLoaded, isLoading, error } = useConversations();
 
   useEffect(() => {
     setLoadingConversations(isLoading);
@@ -22,6 +22,7 @@ const useListConversations = () => {
   return {
     conversations,
     error,
+    isLoaded,
     isLoading,
   };
 };
