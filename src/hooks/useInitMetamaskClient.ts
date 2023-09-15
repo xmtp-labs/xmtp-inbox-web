@@ -1,17 +1,9 @@
-/* eslint-disable no-useless-return */
 import type { ClientOptions } from "@xmtp/react-sdk";
 import { Client, useClient, useCanMessage } from "@xmtp/react-sdk";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useConnect, useSigner } from "wagmi";
+import { useSigner } from "wagmi";
 import type { Signer } from "ethers";
-import {
-  getAppVersion,
-  getEnv,
-  isAppEnvDemo,
-  loadKeys,
-  storeKeys,
-} from "../helpers";
-import { mockConnector } from "../helpers/mockConnector";
+import { getAppVersion, getEnv, loadKeys } from "../helpers";
 
 type ClientStatus = "new" | "created" | "enabled";
 
@@ -42,7 +34,7 @@ const clientOptions = {
   appVersion: getAppVersion(),
 } as Partial<ClientOptions>;
 
-const useInitXmtpClient = ({ shouldRun }: { shouldRun: boolean }) => {
+const useInitMetamaskClient = ({ shouldRun, onFail }) => {
   // track if onboarding is in progress
   const onboardingRef = useRef(false);
   const signerRef = useRef<Signer | null>();
@@ -51,10 +43,44 @@ const useInitXmtpClient = ({ shouldRun }: { shouldRun: boolean }) => {
   // is there a pending signature?
   const [signing, setSigning] = useState(false);
   const { data: signer } = useSigner();
-  const { connect: connectWallet } = useConnect();
+
+  const checkSnaps = async () => {
+    console.log("checking snaps");
+    try {
+      const isSnapsReady = await Client?.isSnapsReady();
+      console.log("has snap installed already -->", isSnapsReady);
+      // Has snap installed already
+      if (isSnapsReady) {
+        return true;
+        // // See if we need this or it auto prompts
+      } else {
+        console.log("Snaps not installed");
+        // Check for whether snap can be installed
+        try {
+          await window.ethereum?.request({
+            method: "wallet_getSnaps",
+          });
+          console.log("canGetSnaps", true);
+          return true;
+        } catch (e) {
+          // Snap cannot be installed
+          onFail();
+        }
+      }
+    } catch {
+      onFail();
+      // no-op
+    }
+    return;
+  };
 
   useEffect(() => {
-    if (!shouldRun) return;
+    // eslint-disable-next-line no-useless-return
+    if (shouldRun) {
+      void checkSnaps();
+    } else {
+      return;
+    }
   }, [shouldRun]);
 
   /**
@@ -107,14 +133,10 @@ const useInitXmtpClient = ({ shouldRun }: { shouldRun: boolean }) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [signer]);
 
-  const { client, isLoading, initialize } = useClient();
+  const { client, isLoading } = useClient();
   const { canMessageStatic: canMessageUser } = useCanMessage();
 
-  // if this is an app demo, connect to the temporary wallet
   useEffect(() => {
-    if (isAppEnvDemo()) {
-      connectWallet({ connector: mockConnector });
-    }
     if (!client) {
       setStatus(undefined);
     }
@@ -148,44 +170,25 @@ const useInitXmtpClient = ({ shouldRun }: { shouldRun: boolean }) => {
           // no signatures needed
           setStatus("enabled");
         } else {
-          // demo mode, wallet won't require any signatures
-          if (isAppEnvDemo()) {
-            // resolve client promises
+          // no keys found, but maybe the address has already been created
+          // let's check
+          const canMessage = await canMessageUser(address, clientOptions);
+          if (canMessage) {
+            // resolve client promise
             createResolve();
-            enableResolve();
+            // identity has been created
+            setStatus("created");
           } else {
-            // no keys found, but maybe the address has already been created
-            // let's check
-            const canMessage = await canMessageUser(address, clientOptions);
-            if (canMessage) {
-              // resolve client promise
-              createResolve();
-              // identity has been created
-              setStatus("created");
-            } else {
-              // no identity on the network
-              setStatus("new");
-            }
+            // no identity on the network
+            setStatus("new");
           }
-          keys = await Client.getKeys(signer, {
-            ...clientOptions,
-            // we don't need to publish the contact here since it
-            // will happen when we create the client later
-            skipContactPublishing: true,
-            // we can skip persistence on the keystore for this short-lived
-            // instance
-            persistConversations: false,
-            preCreateIdentityCallback,
-            preEnableIdentityCallback,
-          });
-          // all signatures have been accepted
-          setStatus("enabled");
-          setSigning(false);
-          // persist client keys
-          storeKeys(address, keys);
+
+          // This prompts user to install snaps
+          keys = undefined;
+          clientOptions.useSnaps = true;
+          clientOptions.preCreateIdentityCallback = preCreateIdentityCallback;
+          clientOptions.preEnableIdentityCallback = preEnableIdentityCallback;
         }
-        // initialize client
-        await initialize({ keys, options: clientOptions, signer });
         onboardingRef.current = false;
       }
     };
@@ -208,4 +211,4 @@ const useInitXmtpClient = ({ shouldRun }: { shouldRun: boolean }) => {
   };
 };
 
-export default useInitXmtpClient;
+export default useInitMetamaskClient;
