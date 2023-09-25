@@ -27,6 +27,7 @@ import { IconButton } from "../IconButton/IconButton";
 import { useAttachmentChange } from "../../../hooks/useAttachmentChange";
 import { typeLookup, type contentTypes } from "../../../helpers/attachments";
 import { classNames } from "../../../helpers";
+import type { RecipientAddress } from "../../../store/xmtp";
 import { useXmtpStore } from "../../../store/xmtp";
 import { useVoiceRecording } from "../../../hooks/useVoiceRecording";
 import { useRecordingTimer } from "../../../hooks/useRecordingTimer";
@@ -44,7 +45,7 @@ type InputProps = {
   startConversation: ReturnType<
     typeof useStartConversation
   >["startConversation"];
-  peerAddress: string;
+  peerAddress: RecipientAddress;
   /**
    * Is the CTA button disabled?
    */
@@ -177,7 +178,9 @@ export const MessageInput = ({
   });
 
   const send = useCallback(async () => {
-    if (value || attachment) {
+    // the peerAddress check is for the type checker only
+    // it's not possible to send a message without a valid peerAddress
+    if (peerAddress && (value || attachment)) {
       // save reference to these values before clearing them from state
       const val = value;
       const attach = attachment;

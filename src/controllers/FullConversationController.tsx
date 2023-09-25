@@ -1,19 +1,27 @@
-import { useMessages, type CachedConversation } from "@xmtp/react-sdk";
-import { useMemo, useRef } from "react";
+import { useMessages, type CachedConversation, useDb } from "@xmtp/react-sdk";
+import { useEffect, useMemo, useRef } from "react";
 import { isSameDay } from "date-fns";
 import { DateDivider } from "../component-library/components/DateDivider/DateDivider";
 import { FullConversation } from "../component-library/components/FullConversation/FullConversation";
 import { FullMessageController } from "./FullMessageController";
 import { isMessageSupported } from "../helpers/isMessagerSupported";
+import { updatePeerAddressIdentity } from "../helpers/conversation";
 
 type FullConversationControllerProps = {
   conversation: CachedConversation;
 };
+
 export const FullConversationController: React.FC<
   FullConversationControllerProps
 > = ({ conversation }) => {
   const lastMessageDateRef = useRef<Date>();
   const renderedDatesRef = useRef<Date[]>([]);
+  const { db } = useDb();
+
+  useEffect(() => {
+    void updatePeerAddressIdentity(conversation, db);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversation.peerAddress]);
 
   // XMTP Hooks
   const { messages, isLoading } = useMessages(conversation);

@@ -31,9 +31,9 @@ interface HeaderDropdownProps {
    */
   disabled?: boolean;
   /**
-   * Conversation id from store, if any
+   * What is the recipient input?
    */
-  conversationTopic?: string;
+  recipientInput: string;
   /**
    * Boolean to determine if screen width is mobile size
    */
@@ -46,7 +46,7 @@ export const HeaderDropdown = ({
   onChange,
   onClick,
   disabled,
-  conversationTopic,
+  recipientInput,
   isMobileView,
 }: HeaderDropdownProps) => {
   const { t } = useTranslation();
@@ -71,7 +71,7 @@ export const HeaderDropdown = ({
           <h1 className="font-bold text-lg mr-2">{currentlySelected}</h1>
           {!disabled && <ChevronDownIcon width="24" />}
         </span>
-        {(conversationTopic || isMobileView) && (
+        {(recipientInput || isMobileView) && (
           <IconButton
             onClick={() => onClick?.()}
             label={<PlusIcon color="white" width="20" />}

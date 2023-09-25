@@ -5,7 +5,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { Avatar } from "../Avatar/Avatar";
 import { classNames } from "../../../helpers";
-import { ShortCopySkeletonLoader } from "../Loaders/SkeletonLoaders/ShortCopySkeletonLoader";
 
 interface AddressInputProps {
   /**
@@ -62,7 +61,6 @@ export const AddressInput = ({
   avatarUrlProps,
   onChange,
   isError,
-  isLoading,
   onTooltipClick,
   value,
   onLeftIconClick,
@@ -85,21 +83,12 @@ export const AddressInput = ({
         onSubmit={(e) => e.preventDefault()}>
         <div className="mr-2 font-bold text-sm">{t("common.input_label")}:</div>
         {resolvedAddress?.displayAddress && <Avatar {...avatarUrlProps} />}
-        <div className="ml-2 md:ml-4 flex flex-col justify-center">
-          {isLoading ? (
-            <ShortCopySkeletonLoader lines={1} />
-          ) : resolvedAddress?.displayAddress ? (
-            <div className="flex flex-col text-md py-1">
-              <span
-                className="font-bold h-4 mb-2 ml-0"
-                data-testid="recipient-wallet-address">
-                {resolvedAddress.displayAddress}
-              </span>
-              {resolvedAddress.walletAddress && (
-                <span className="text-sm max-md:text-xs font-mono">
-                  {resolvedAddress.walletAddress}
-                </span>
-              )}
+        <div className="ml-2 md:ml-4">
+          {resolvedAddress?.displayAddress ? (
+            <div
+              className="font-bold text-md"
+              data-testid="recipient-wallet-address">
+              {resolvedAddress.displayAddress}
             </div>
           ) : (
             <input
@@ -121,11 +110,21 @@ export const AddressInput = ({
               aria-label={t("aria_labels.address_input") || ""}
             />
           )}
-          <p
-            className={classNames("font-mono", "text-sm", subtextColor)}
+          <div
+            className={classNames(
+              "font-mono",
+              "text-sm",
+              "max-md:text-xs",
+              "h-5",
+              subtextColor,
+            )}
             data-testid="message-to-subtext">
-            {t(subtext || "")}
-          </p>
+            {resolvedAddress?.walletAddress
+              ? resolvedAddress?.walletAddress
+              : subtext
+              ? t(subtext)
+              : ""}
+          </div>
         </div>
       </form>
       {onTooltipClick && (

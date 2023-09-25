@@ -1,10 +1,9 @@
 import type { Attachment } from "@xmtp/content-type-remote-attachment";
 import { useStartConversation } from "@xmtp/react-sdk";
 import { MessageInput } from "../component-library/components/MessageInput/MessageInput";
-import { RecipientInputMode } from "../helpers";
-import useGetRecipientInputMode from "../hooks/useGetRecipientInputMode";
 import useSendMessage from "../hooks/useSendMessage";
 import useSelectedConversation from "../hooks/useSelectedConversation";
+import { useXmtpStore } from "../store/xmtp";
 
 interface MessageInputControllerProps {
   attachment?: Attachment;
@@ -22,16 +21,16 @@ export const MessageInputController = ({
   setIsDragActive,
 }: MessageInputControllerProps) => {
   // XMTP Hooks
-  const { recipientInputMode, recipientEnteredValue } =
-    useGetRecipientInputMode();
   const conversation = useSelectedConversation();
+  const recipientOnNetwork = useXmtpStore((s) => s.recipientOnNetwork);
+  const recipientAddress = useXmtpStore((s) => s.recipientAddress);
   const { startConversation } = useStartConversation();
   const { sendMessage } = useSendMessage(attachment || undefined);
 
   return (
     <MessageInput
-      peerAddress={recipientEnteredValue}
-      isDisabled={recipientInputMode !== RecipientInputMode.OnNetwork}
+      peerAddress={recipientAddress}
+      isDisabled={!recipientOnNetwork}
       startConversation={startConversation}
       sendMessage={sendMessage}
       conversation={conversation}

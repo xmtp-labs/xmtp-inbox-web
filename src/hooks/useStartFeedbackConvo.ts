@@ -1,20 +1,22 @@
-import { useStartConversation } from "@xmtp/react-sdk";
+import { useDb, useStartConversation } from "@xmtp/react-sdk";
 import { useEffect, useMemo } from "react";
 import { XMTP_FEEDBACK_ADDRESS } from "../helpers";
 import { useXmtpStore } from "../store/xmtp";
 import { findFeedbackConversation } from "../helpers/findFeedbackConversation";
 import useListConversations from "./useListConversations";
+import { updatePeerAddressIdentity } from "../helpers/conversation";
 
 const useStartFeedbackConvo = () => {
+  const { db } = useDb();
   const { conversations, isLoaded } = useListConversations();
   const { startConversation } = useStartConversation();
-
-  const setRecipientWalletAddress = useXmtpStore(
-    (state) => state.setRecipientWalletAddress,
-  );
-  const setConversationTopic = useXmtpStore(
-    (state) => state.setConversationTopic,
-  );
+  const setRecipientOnNetwork = useXmtpStore((s) => s.setRecipientOnNetwork);
+  const setRecipientAddress = useXmtpStore((s) => s.setRecipientAddress);
+  const setRecipientState = useXmtpStore((s) => s.setRecipientState);
+  const setRecipientInput = useXmtpStore((s) => s.setRecipientInput);
+  const setRecipientAvatar = useXmtpStore((s) => s.setRecipientAvatar);
+  const setRecipientName = useXmtpStore((s) => s.setRecipientName);
+  const setConversationTopic = useXmtpStore((s) => s.setConversationTopic);
 
   const feedbackConversation = useMemo(
     () => findFeedbackConversation(conversations),
@@ -30,18 +32,34 @@ const useStartFeedbackConvo = () => {
           undefined,
         );
 
+        // conversation started, select it
         if (cachedConversation) {
-          // set recipient address, which will set the conversation topic
-          setRecipientWalletAddress(XMTP_FEEDBACK_ADDRESS);
+          const { name, avatar } = await updatePeerAddressIdentity(
+            cachedConversation,
+            db,
+          );
+          setRecipientName(name);
+          setRecipientAvatar(avatar);
+          setRecipientState("valid");
+          setRecipientInput(XMTP_FEEDBACK_ADDRESS);
+          setRecipientOnNetwork(true);
+          setRecipientAddress(XMTP_FEEDBACK_ADDRESS);
+          setConversationTopic(cachedConversation.topic);
         }
       }
     };
     void startFeedbackConvo();
   }, [
+    db,
     feedbackConversation,
     isLoaded,
     setConversationTopic,
-    setRecipientWalletAddress,
+    setRecipientAddress,
+    setRecipientAvatar,
+    setRecipientInput,
+    setRecipientName,
+    setRecipientOnNetwork,
+    setRecipientState,
     startConversation,
   ]);
 };

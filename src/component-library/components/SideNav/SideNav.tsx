@@ -14,6 +14,7 @@ import {
 } from "@heroicons/react/outline";
 import { useTranslation } from "react-i18next";
 import { QRCode } from "react-qrcode-logo";
+import type { ETHAddress } from "../../../helpers";
 import { classNames, isAppEnvDemo, shortAddress } from "../../../helpers";
 import { XmtpIcon } from "../Icons/XmtpIcon";
 import { Avatar } from "../Avatar/Avatar";
@@ -33,7 +34,7 @@ interface SideNavProps {
   /**
    * What is the wallet address?
    */
-  walletAddress?: string;
+  walletAddress?: ETHAddress;
   /**
    * What is the avatarUrl?
    */
@@ -191,7 +192,7 @@ const SideNav = ({
                 <div className="flex items-center">
                   <div className="flex flex-col px-2 justify-center">
                     <span className="font-bold" data-testid="wallet-address">
-                      {shortAddress(displayAddress ?? "")}
+                      {displayAddress ? shortAddress(displayAddress) : ""}
                     </span>
                     {walletAddress && displayAddress !== walletAddress && (
                       <button

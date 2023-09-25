@@ -1,4 +1,4 @@
-import { isEnsAddress, isUnsAddress } from "../../../helpers";
+import { isEnsName, isUnsName } from "../../../helpers";
 import { iconMapping, TagIcon } from "./iconMapping";
 
 interface TagProps {
@@ -21,11 +21,11 @@ export const Tag = ({ text, icon, isLoading = false }: TagProps) => {
   if (!mappedIcon) {
     mappedIcon = text.startsWith("0x")
       ? iconMapping[TagIcon.WALLET_ADDRESS]
-      : isEnsAddress(text)
+      : isEnsName(text)
       ? iconMapping[TagIcon.ENS_ADDRESS]
       : text.endsWith(".lens")
       ? iconMapping[TagIcon.LENS_ADDRESS]
-      : isUnsAddress(text)
+      : isUnsName(text)
       ? iconMapping[TagIcon.UNS_ADDRESS]
       : undefined;
   }

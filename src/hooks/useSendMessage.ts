@@ -14,14 +14,11 @@ import { Web3Storage } from "web3.storage";
 import { useTranslation } from "react-i18next";
 import Upload from "../helpers/classes/Upload";
 import { useXmtpStore } from "../store/xmtp";
-import { isValidLongWalletAddress } from "../helpers";
 
 const useSendMessage = (attachment?: Attachment) => {
   const { t } = useTranslation();
   const { sendMessage: _sendMessage, isLoading, error } = _useSendMessage();
-  const recipientWalletAddress = useXmtpStore(
-    (state) => state.recipientWalletAddress,
-  );
+  const recipientOnNetwork = useXmtpStore((s) => s.recipientOnNetwork);
 
   const sendMessage = useCallback(
     async (
@@ -29,7 +26,7 @@ const useSendMessage = (attachment?: Attachment) => {
       message: string | Attachment,
       type: "text" | "attachment",
     ) => {
-      if (!isValidLongWalletAddress(recipientWalletAddress)) {
+      if (!recipientOnNetwork) {
         return;
       }
       if (attachment && type === "attachment") {
@@ -75,7 +72,7 @@ const useSendMessage = (attachment?: Attachment) => {
         void _sendMessage(conversation, message);
       }
     },
-    [recipientWalletAddress, attachment, _sendMessage, t],
+    [recipientOnNetwork, attachment, _sendMessage, t],
   );
 
   return {

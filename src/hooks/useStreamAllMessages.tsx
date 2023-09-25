@@ -1,13 +1,16 @@
-import { useStreamAllMessages as _useStreamAllMessages } from "@xmtp/react-sdk";
+import {
+  useStreamAllMessages as _useStreamAllMessages,
+  useConversation,
+} from "@xmtp/react-sdk";
 import type { DecodedMessage } from "@xmtp/react-sdk";
 import { useCallback, useRef } from "react";
-import { fetchEnsName } from "@wagmi/core";
 import { useAccount } from "wagmi";
-import { shortAddress, truncate, fetchUnsName } from "../helpers";
-import type { address } from "../pages/inbox";
+import { shortAddress, truncate } from "../helpers";
+import type { PeerIdentityMetadata } from "../helpers/conversation";
 
 const useStreamAllMessages = () => {
   const { address: walletAddress } = useAccount();
+  const { getCachedByTopic } = useConversation();
   const latestMsgId = useRef<string>();
 
   const onMessage = useCallback(
@@ -18,22 +21,30 @@ const useStreamAllMessages = () => {
         message.senderAddress !== walletAddress &&
         document.hidden
       ) {
-        const ensName = await fetchEnsName({
-          address: message.senderAddress as address,
-        });
-        const unsName = await fetchUnsName(message?.senderAddress);
+        // look for name in cached conversation
+        const cachedConversation = await getCachedByTopic(
+          message.conversation.topic,
+        );
+        let name: string | null = null;
+        if (cachedConversation) {
+          const metadata = cachedConversation.metadata
+            ?.peerIdentity as PeerIdentityMetadata;
+          if (metadata) {
+            name = metadata.name;
+          }
+        }
 
         // eslint-disable-next-line no-new
         new Notification("XMTP", {
           body: `${
-            ensName || unsName || shortAddress(message.senderAddress ?? "")
+            name || shortAddress(message.senderAddress ?? "")
           }\n${truncate(message.content as string, 75)}`,
         });
 
         latestMsgId.current = message.id;
       }
     },
-    [walletAddress],
+    [getCachedByTopic, walletAddress],
   );
 
   void _useStreamAllMessages(onMessage);

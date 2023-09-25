@@ -19,7 +19,7 @@ export const Avatar = ({ url, isLoading, address }: AvatarProps) => {
   if (isLoading) {
     return (
       <div className="animate-pulse flex">
-        <div className="rounded-full bg-gray-200 h-12 w-12" />
+        <div className="rounded-full bg-gray-200 min-w-[40px] max-w-[40px] h-[40px]" />
       </div>
     );
   }

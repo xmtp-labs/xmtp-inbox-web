@@ -37,7 +37,7 @@
     "messages_empty_cta_3_header": "Developer docs",
     "messages_empty_cta_3_subheader": "Learn how to build an app with XMTP",
     "address_field_prompt": "Enter a 0x wallet, ENS, or UNS address",
-    "address_field_loading": "Finding address on the XMTP network...",
+    "address_field_loading": "Checking address...",
     "address_field_invalid": "Please enter a valid 0x wallet, ENS, or UNS address",
     "address_field_not_on_network": "Sorry, we can't message this address because its owner hasn't used it with XMTP yet",
     "message_field_prompt": "Write a message",

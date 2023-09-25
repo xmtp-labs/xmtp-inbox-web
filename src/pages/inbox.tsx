@@ -17,8 +17,6 @@ import { ConversationListController } from "../controllers/ConversationListContr
 import { useAttachmentChange } from "../hooks/useAttachmentChange";
 import useSelectedConversation from "../hooks/useSelectedConversation";
 
-export type address = `0x${string}`;
-
 const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
   const navigate = useNavigate();
   const resetXmtpState = useXmtpStore((state) => state.resetXmtpState);
@@ -36,9 +34,7 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
 
   const { data: signer } = useSigner();
 
-  const recipientWalletAddress = useXmtpStore(
-    (state) => state.recipientWalletAddress,
-  );
+  const recipientAddress = useXmtpStore((s) => s.recipientAddress);
 
   const size = useWindowSize();
 
@@ -112,7 +108,7 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
       <div className="w-full md:h-full overflow-auto flex flex-col md:flex-row">
         <div className="flex">
           {size[0] > TAILWIND_MD_BREAKPOINT ||
-          (!recipientWalletAddress && !startedFirstMessage) ? (
+          (!recipientAddress && !startedFirstMessage) ? (
             <>
               <SideNavController />
               <div className="flex flex-col w-full h-screen overflow-y-auto md:min-w-[350px]">
@@ -125,7 +121,7 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
           ) : null}
         </div>
         {size[0] > TAILWIND_MD_BREAKPOINT ||
-        recipientWalletAddress ||
+        recipientAddress ||
         startedFirstMessage ? (
           <div className="flex w-full flex-col h-screen overflow-hidden">
             {!conversations.length &&

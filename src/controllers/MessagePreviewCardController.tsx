@@ -1,16 +1,11 @@
 import { useLastMessage, type CachedConversation } from "@xmtp/react-sdk";
-import { useCallback, useEffect, useState } from "react";
-import { useEnsAvatar, useEnsName } from "wagmi";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { MessagePreviewCard } from "../component-library/components/MessagePreviewCard/MessagePreviewCard";
-import {
-  XMTP_FEEDBACK_ADDRESS,
-  fetchUnsName,
-  isValidLongWalletAddress,
-  shortAddress,
-} from "../helpers";
-import type { address } from "../pages/inbox";
+import { XMTP_FEEDBACK_ADDRESS, shortAddress } from "../helpers";
 import { useXmtpStore } from "../store/xmtp";
+import type { PeerIdentityMetadata } from "../helpers/conversation";
+import { getPeerAddressIdentity } from "../helpers/conversation";
 
 interface MessagePreviewCardControllerProps {
   convo: CachedConversation;
@@ -22,50 +17,43 @@ export const MessagePreviewCardController = ({
   const { t } = useTranslation();
   const lastMessage = useLastMessage(convo.topic);
   // XMTP State
-  const recipientWalletAddress = useXmtpStore(
-    (state) => state.recipientWalletAddress,
-  );
-
-  const setRecipientWalletAddress = useXmtpStore(
-    (state) => state.setRecipientWalletAddress,
-  );
+  const recipientAddress = useXmtpStore((s) => s.recipientAddress);
+  const setRecipientInput = useXmtpStore((s) => s.setRecipientInput);
+  const setRecipientAddress = useXmtpStore((s) => s.setRecipientAddress);
+  const setRecipientName = useXmtpStore((s) => s.setRecipientName);
+  const setRecipientAvatar = useXmtpStore((s) => s.setRecipientAvatar);
+  const setRecipientState = useXmtpStore((s) => s.setRecipientState);
+  const setRecipientOnNetwork = useXmtpStore((s) => s.setRecipientOnNetwork);
+  const setConversationTopic = useXmtpStore((s) => s.setConversationTopic);
   const conversationTopic = useXmtpStore((state) => state.conversationTopic);
-
-  // Get ENS name and avatar from Wagmi
-  const { data: previewEnsName } = useEnsName({
-    address: convo?.peerAddress as address,
-  });
-  const { data: convoAvatarUrl, isLoading: convoAvatarLoading } = useEnsAvatar({
-    address: convo?.peerAddress as address,
-  });
-
-  // Get UNS name
-  const [previewUnsName, setPreviewUnsName] = useState<string | null>();
-
-  useEffect(() => {
-    const getUns = async () => {
-      if (isValidLongWalletAddress(convo?.peerAddress || "")) {
-        const name = await fetchUnsName(convo?.peerAddress);
-        setPreviewUnsName(name);
-      } else {
-        setPreviewUnsName(null);
-      }
-    };
-
-    void getUns();
-  }, [convo?.peerAddress]);
 
   // Helpers
   const isSelected = conversationTopic === convo.topic;
 
   const onConvoClick = useCallback(
     (conversation: CachedConversation) => {
-      if (recipientWalletAddress !== conversation.peerAddress) {
-        // this will also update the conversation topic
-        setRecipientWalletAddress(conversation.peerAddress);
+      if (recipientAddress !== conversation.peerAddress) {
+        const peerAddress = conversation.peerAddress as `0x${string}`;
+        const { name, avatar } = getPeerAddressIdentity(conversation);
+        setRecipientAvatar(avatar);
+        setRecipientName(name);
+        setRecipientAddress(peerAddress);
+        setRecipientOnNetwork(true);
+        setRecipientState("valid");
+        setRecipientInput(peerAddress);
+        setConversationTopic(conversation.topic);
       }
     },
-    [recipientWalletAddress, setRecipientWalletAddress],
+    [
+      recipientAddress,
+      setConversationTopic,
+      setRecipientAddress,
+      setRecipientAvatar,
+      setRecipientInput,
+      setRecipientName,
+      setRecipientOnNetwork,
+      setRecipientState,
+    ],
   );
 
   const conversationDomain = convo?.context?.conversationId.split("/")[0] ?? "";
@@ -80,6 +68,11 @@ export const MessagePreviewCardController = ({
     content = t("messages.send_feedback") ?? "Send feedback";
   }
 
+  const conversationPeerIdentity = useMemo(
+    () => convo.metadata?.peerIdentity as PeerIdentityMetadata,
+    [convo.metadata?.peerIdentity],
+  );
+
   return (
     <MessagePreviewCard
       isSelected={isSelected}
@@ -87,17 +80,14 @@ export const MessagePreviewCardController = ({
       text={content}
       datetime={convo?.updatedAt}
       displayAddress={
-        previewEnsName ||
-        previewUnsName ||
-        shortAddress(convo?.peerAddress || "")
+        conversationPeerIdentity?.name ?? shortAddress(convo?.peerAddress || "")
       }
       onClick={() => {
         if (convo) {
-          onConvoClick?.(convo);
+          void onConvoClick?.(convo);
         }
       }}
-      isLoading={convoAvatarLoading}
-      avatarUrl={convoAvatarUrl || ""}
+      avatarUrl={conversationPeerIdentity?.avatar || ""}
       conversationDomain={shortAddress(conversationDomain)}
       pinned={convo?.peerAddress === XMTP_FEEDBACK_ADDRESS}
       address={convo?.peerAddress}

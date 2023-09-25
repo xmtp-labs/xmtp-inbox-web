@@ -4,14 +4,18 @@ import { Client, useClient, useCanMessage } from "@xmtp/react-sdk";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useConnect, useSigner } from "wagmi";
 import type { Signer } from "ethers";
+import type { ETHAddress } from "../helpers";
 import {
   getAppVersion,
   getEnv,
   isAppEnvDemo,
   loadKeys,
   storeKeys,
+  throttledFetchAddressName,
+  throttledFetchEnsAvatar,
 } from "../helpers";
 import { mockConnector } from "../helpers/mockConnector";
+import { useXmtpStore } from "../store/xmtp";
 
 type ClientStatus = "new" | "created" | "enabled";
 
@@ -52,6 +56,8 @@ const useInitXmtpClient = ({ shouldRun }: { shouldRun: boolean }) => {
   const [signing, setSigning] = useState(false);
   const { data: signer } = useSigner();
   const { connect: connectWallet } = useConnect();
+  const setClientName = useXmtpStore((s) => s.setClientName);
+  const setClientAvatar = useXmtpStore((s) => s.setClientAvatar);
 
   useEffect(() => {
     console.log("shoudl run", shouldRun);
@@ -188,7 +194,22 @@ const useInitXmtpClient = ({ shouldRun }: { shouldRun: boolean }) => {
           storeKeys(address, keys);
         }
         // initialize client
-        await initialize({ keys, options: clientOptions, signer });
+        const xmtpClient = await initialize({
+          keys,
+          options: clientOptions,
+          signer,
+        });
+        if (xmtpClient) {
+          const name = await throttledFetchAddressName(
+            xmtpClient.address as ETHAddress,
+          );
+          const avatar = await throttledFetchEnsAvatar({
+            address: xmtpClient.address as ETHAddress,
+          });
+          setClientName(name);
+          setClientAvatar(avatar);
+        }
+
         onboardingRef.current = false;
       }
     };

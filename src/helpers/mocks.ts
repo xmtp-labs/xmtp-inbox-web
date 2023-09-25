@@ -1,5 +1,9 @@
 import { ContentTypeText } from "@xmtp/react-sdk";
-import type { CachedConversation, CachedMessage } from "@xmtp/react-sdk";
+import type {
+  CachedConversation,
+  CachedMessage,
+  CachedMessageWithId,
+} from "@xmtp/react-sdk";
 
 export const getMockConversation = (
   values?: Partial<CachedConversation>,
@@ -14,8 +18,9 @@ export const getMockConversation = (
 });
 
 export const getMockMessage = (
+  id: number,
   values?: Partial<CachedMessage>,
-): CachedMessage => ({
+): CachedMessageWithId => ({
   senderAddress: "",
   hasLoadError: false,
   hasSendError: false,
@@ -30,4 +35,5 @@ export const getMockMessage = (
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   content: values?.content,
   ...values,
+  id,
 });

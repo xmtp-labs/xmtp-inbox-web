@@ -2,7 +2,7 @@ import type { ComponentStory, ComponentMeta } from "@storybook/react";
 import type { RemoteAttachment } from "@xmtp/content-type-remote-attachment";
 import { FullMessage } from "./FullMessage";
 import { shortAddress } from "../../../helpers";
-import MessageContentController from "../../../controllers/MessageContentController";
+import { getMockMessage } from "../../../helpers/mocks";
 
 export default {
   title: "FullMessage",
@@ -20,14 +20,11 @@ const Template: ComponentStory<typeof FullMessage> = (args) => (
 
 export const FullOutgoingMessage = Template.bind({});
 FullOutgoingMessage.args = {
-  text: (
-    <MessageContentController
-      content="Hello there"
-      isSelf
-      isLoading={false}
-      isError={false}
-    />
-  ),
+  message: getMockMessage(1, {
+    content: "Hello there",
+    senderAddress: "sender",
+    walletAddress: "receiver",
+  }),
   from: {
     displayAddress: "hi.xmtp.eth",
     isSelf: true,
@@ -37,14 +34,11 @@ FullOutgoingMessage.args = {
 
 export const FullIncomingMessage = Template.bind({});
 FullIncomingMessage.args = {
-  text: (
-    <MessageContentController
-      content="Hello there"
-      isSelf={false}
-      isLoading={false}
-      isError={false}
-    />
-  ),
+  message: getMockMessage(1, {
+    content: "Hello there",
+    senderAddress: "receiver",
+    walletAddress: "sender",
+  }),
   from: {
     displayAddress: shortAddress("0x194c31cAe1418D5256E8c58e0d08Aee1046C6Ed0"),
     isSelf: false,
@@ -63,33 +57,13 @@ const remoteAttachment: RemoteAttachment = {
   filename: "filename",
 };
 
-export const FullOutgoingMessageAttachmentLoading = Template.bind({});
-FullOutgoingMessageAttachmentLoading.args = {
-  text: (
-    <MessageContentController
-      content={remoteAttachment}
-      isSelf
-      isLoading
-      isError={false}
-    />
-  ),
-  from: {
-    displayAddress: "hi.xmtp.eth",
-    isSelf: true,
-  },
-  datetime: new Date(),
-};
-
 export const FullIncomingMessageAttachment = Template.bind({});
 FullIncomingMessageAttachment.args = {
-  text: (
-    <MessageContentController
-      content={remoteAttachment}
-      isSelf={false}
-      isLoading={false}
-      isError={false}
-    />
-  ),
+  message: getMockMessage(1, {
+    content: remoteAttachment,
+    senderAddress: "receiver",
+    walletAddress: "sender",
+  }),
   from: {
     displayAddress: "another.xmtp.eth",
     isSelf: false,
@@ -99,14 +73,12 @@ FullIncomingMessageAttachment.args = {
 
 export const FullIncomingAttachmentError = Template.bind({});
 FullIncomingAttachmentError.args = {
-  text: (
-    <MessageContentController
-      content={remoteAttachment}
-      isSelf={false}
-      isLoading={false}
-      isError
-    />
-  ),
+  message: getMockMessage(1, {
+    hasLoadError: true,
+    content: remoteAttachment,
+    senderAddress: "receiver",
+    walletAddress: "sender",
+  }),
   from: {
     displayAddress: "another.xmtp.eth",
     isSelf: false,
