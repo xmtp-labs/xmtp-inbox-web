@@ -16,7 +16,7 @@ const OnboardingPage = () => {
   const { openConnectModal } = useConnectModal();
   const [isSnapsFlow, setIsSnapsFlow] = useState(false);
   const { client, isLoading, status, setStatus, resolveCreate, resolveEnable } =
-    useInitXmtpClient({ shouldRun: isSnapsFlow });
+    useInitXmtpClient({ shouldRun: !isSnapsFlow });
 
   const {
     client: metamaskClient,
@@ -35,8 +35,11 @@ const OnboardingPage = () => {
   useEffect(() => {
     if (window.ethereum?.isMetaMask) {
       setIsSnapsFlow(true);
+    } else {
+      setIsSnapsFlow(false);
     }
-  }, []);
+  }, [status, metamaskStatus]);
+
   useEffect(() => {
     const routeToInbox = () => {
       if (client || metamaskClient) {
@@ -78,8 +81,8 @@ const OnboardingPage = () => {
           if (client || metamaskClient) {
             void disconnectClient();
           }
-          setStatus(undefined);
-          setMetamaskStatus(undefined);
+          setStatus?.(undefined);
+          setMetamaskStatus?.(undefined);
           wipeKeys(address ?? "");
           disconnectWagmi();
           resetWagmi();

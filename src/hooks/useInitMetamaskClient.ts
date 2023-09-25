@@ -9,6 +9,18 @@ type ClientStatus = "new" | "created" | "enabled";
 
 type ResolveReject<T = void> = (value: T | PromiseLike<T>) => void;
 
+interface Ethereum {
+  request(args: {
+    method: "wallet_requestSnaps";
+    params: {
+      [snapName: string]: object; // snap details
+    };
+  }): Promise<{
+    [snapName: string]: {
+      enabled: boolean; // snap enabled state
+    };
+  }>;
+}
 /**
  * This is a helper function for creating a new promise and getting access
  * to the resolve and reject callbacks for external use.
@@ -34,7 +46,13 @@ const clientOptions = {
   appVersion: getAppVersion(),
 } as Partial<ClientOptions>;
 
-const useInitMetamaskClient = ({ shouldRun, onFail }) => {
+const useInitMetamaskClient = ({
+  shouldRun,
+  onFail,
+}: {
+  shouldRun: boolean;
+  onFail: () => void;
+}) => {
   // track if onboarding is in progress
   const onboardingRef = useRef(false);
   const signerRef = useRef<Signer | null>();
@@ -43,45 +61,6 @@ const useInitMetamaskClient = ({ shouldRun, onFail }) => {
   // is there a pending signature?
   const [signing, setSigning] = useState(false);
   const { data: signer } = useSigner();
-
-  const checkSnaps = async () => {
-    console.log("checking snaps");
-    try {
-      const isSnapsReady = await Client?.isSnapsReady();
-      console.log("has snap installed already -->", isSnapsReady);
-      // Has snap installed already
-      if (isSnapsReady) {
-        return true;
-        // // See if we need this or it auto prompts
-      } else {
-        console.log("Snaps not installed");
-        // Check for whether snap can be installed
-        try {
-          await window.ethereum?.request({
-            method: "wallet_getSnaps",
-          });
-          console.log("canGetSnaps", true);
-          return true;
-        } catch (e) {
-          // Snap cannot be installed
-          onFail();
-        }
-      }
-    } catch {
-      onFail();
-      // no-op
-    }
-    return;
-  };
-
-  useEffect(() => {
-    // eslint-disable-next-line no-useless-return
-    if (shouldRun) {
-      void checkSnaps();
-    } else {
-      return;
-    }
-  }, [shouldRun]);
 
   /**
    * In order to have more granular control of the onboarding process, we must
@@ -133,7 +112,7 @@ const useInitMetamaskClient = ({ shouldRun, onFail }) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [signer]);
 
-  const { client, isLoading } = useClient();
+  const { client, isLoading, initialize } = useClient();
   const { canMessageStatic: canMessageUser } = useCanMessage();
 
   useEffect(() => {
@@ -183,13 +162,48 @@ const useInitMetamaskClient = ({ shouldRun, onFail }) => {
             setStatus("new");
           }
 
-          // This prompts user to install snaps
-          keys = undefined;
-          clientOptions.useSnaps = true;
-          clientOptions.preCreateIdentityCallback = preCreateIdentityCallback;
-          clientOptions.preEnableIdentityCallback = preEnableIdentityCallback;
+          if (shouldRun) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+            const browserSupportSnaps = await Client.isSnapsReady();
+            if (browserSupportSnaps) {
+              try {
+                const result = await (
+                  window.ethereum as unknown as Ethereum
+                ).request({
+                  method: "wallet_requestSnaps",
+                  params: {
+                    "npm:@xmtp/snap": {},
+                  },
+                });
+
+                if (result && result?.["npm:@xmtp/snap"].enabled) {
+                  createResolve();
+                  enableResolve();
+                  setStatus("enabled");
+
+                  keys = undefined;
+                  clientOptions.useSnaps = true;
+                  clientOptions.preCreateIdentityCallback =
+                    preCreateIdentityCallback;
+                  clientOptions.preEnableIdentityCallback =
+                    preEnableIdentityCallback;
+                } else if (result && !result.enabled) {
+                  throw new Error("snaps not enabled with XMTP");
+                }
+              } catch (error) {
+                onFail();
+              }
+            } else {
+              onFail();
+            }
+          }
+          // I did change this if this doesnt work tmrw
+          // initialize client
+          if (keys) {
+            await initialize({ keys, options: clientOptions, signer });
+          }
+          onboardingRef.current = false;
         }
-        onboardingRef.current = false;
       }
     };
     void updateStatus();

@@ -54,7 +54,10 @@ const useInitXmtpClient = ({ shouldRun }: { shouldRun: boolean }) => {
   const { connect: connectWallet } = useConnect();
 
   useEffect(() => {
-    if (!shouldRun) return;
+    console.log("shoudl run", shouldRun);
+    if (!shouldRun) {
+      return;
+    }
   }, [shouldRun]);
 
   /**
@@ -201,10 +204,10 @@ const useInitXmtpClient = ({ shouldRun }: { shouldRun: boolean }) => {
   return {
     client,
     isLoading: isLoading || signing,
-    resolveCreate,
-    resolveEnable,
-    status,
-    setStatus,
+    resolveCreate: shouldRun ? resolveCreate : undefined,
+    resolveEnable: shouldRun ? resolveEnable : undefined,
+    status: shouldRun ? status : undefined,
+    setStatus: shouldRun ? setStatus : undefined,
   };
 };
 
