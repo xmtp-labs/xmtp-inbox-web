@@ -37,7 +37,9 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ],
 );
 
-const projectId = import.meta.env.VITE_PROJECT_ID;
+// Required field as of WalletConnect v2.
+// Replace with your project ID: https://www.rainbowkit.com/docs/migration-guide#2-supply-a-walletconnect-cloud-projectid
+const projectId = import.meta.env.VITE_PROJECT_ID || "ADD_PROJECT_ID_HERE";
 const appName = "XMTP Inbox Web";
 
 const { wallets } = getDefaultWallets({
