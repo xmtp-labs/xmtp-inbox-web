@@ -4,7 +4,7 @@ import { useClient, useConversations } from "@xmtp/react-sdk";
 import { useDisconnect, useWalletClient } from "wagmi";
 import type { Attachment } from "@xmtp/content-type-remote-attachment";
 import { useNavigate } from "react-router-dom";
-import { useXmtpStore } from "../store/xmtp";
+import { RecipientAddress, useXmtpStore } from "../store/xmtp";
 import { TAILWIND_MD_BREAKPOINT, wipeKeys } from "../helpers";
 import { FullConversationController } from "../controllers/FullConversationController";
 import { AddressInputController } from "../controllers/AddressInputController";
@@ -16,6 +16,7 @@ import useWindowSize from "../hooks/useWindowSize";
 import { ConversationListController } from "../controllers/ConversationListController";
 import { useAttachmentChange } from "../hooks/useAttachmentChange";
 import useSelectedConversation from "../hooks/useSelectedConversation";
+import useMessagePrefill from "../hooks/useMessagePrefill";
 
 const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
   const navigate = useNavigate();
@@ -25,10 +26,18 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
   const { conversations } = useConversations();
   const selectedConversation = useSelectedConversation();
   const { data: walletClient } = useWalletClient();
+  const { peerAddress } = useMessagePrefill();
+
+  const setRecipientAddress = useXmtpStore((s) => s.setRecipientAddress);
 
   useEffect(() => {
     if (!client) {
-      navigate("/");
+      if (peerAddress) {
+        setRecipientAddress(peerAddress as RecipientAddress);
+        navigate(`/?peerAddress=${peerAddress}`);
+      } else {
+        navigate("/");
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client]);
@@ -125,12 +134,14 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
             </>
           ) : null}
         </div>
+
         {size[0] > TAILWIND_MD_BREAKPOINT ||
         recipientAddress ||
         startedFirstMessage ? (
           <div className="flex w-full flex-col h-screen overflow-hidden">
             {!conversations.length &&
             !loadingConversations &&
+            !recipientAddress &&
             !startedFirstMessage ? (
               <LearnMore
                 version="replace"

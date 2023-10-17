@@ -12,8 +12,10 @@ const DmPage = () => {
       // address is present, set address input and go the inbox
       if (address) {
         setRecipientInput(address);
+        navigate(`/inbox?peerAddress=${address}`);
+      } else {
+        navigate("/inbox");
       }
-      navigate("/inbox");
     };
     void routeToInbox();
   }, [address, navigate, setRecipientInput]);
