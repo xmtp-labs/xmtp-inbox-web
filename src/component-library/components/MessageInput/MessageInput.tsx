@@ -23,6 +23,7 @@ import {
   type CachedConversation,
   type useStartConversation,
 } from "@xmtp/react-sdk";
+import Zeekaptcha, { getEvents } from "zeekaptcha";
 import { IconButton } from "../IconButton/IconButton";
 import { useAttachmentChange } from "../../../hooks/useAttachmentChange";
 import { typeLookup, type contentTypes } from "../../../helpers/attachments";
@@ -88,6 +89,10 @@ export const MessageInput = ({
   setAttachmentPreview,
   setIsDragActive,
 }: InputProps) => {
+  // TO-DO: Add check for if no captcha events for this address, then show captcha
+  // const captchaEvents = await getEvents(peerAddress as string);
+  // console.log("CAPTCHA EVENTS", captchaEvents);
+
   const { getCachedByPeerAddress } = useConversation();
   const { t } = useTranslation();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -258,26 +263,30 @@ export const MessageInput = ({
         {attachmentError ? (
           <p className="text-red-600 w-full m-1 ml-4">{attachmentError}</p>
         ) : (
-          <textarea
-            id="chat"
-            data-testid="message-input"
-            onChange={onChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                void send();
-              }
-            }}
-            ref={textAreaRef}
-            rows={1}
-            className={classNames(
-              textAreaStyles,
-              "border-b-8 border-gray-50 m-0 bg-transparent",
-              recordingValue && "text-red-500",
-            )}
-            placeholder={t("messages.message_field_prompt") || ""}
-            value={recordingValue || value}
-          />
+          <div className="flex flex-row justify-between items-center">
+            {/* Currently always show captcha, just to get this working at all */}
+            <Zeekaptcha />
+            <textarea
+              id="chat"
+              data-testid="message-input"
+              onChange={onChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  void send();
+                }
+              }}
+              ref={textAreaRef}
+              rows={1}
+              className={classNames(
+                textAreaStyles,
+                "border-b-8 border-gray-50 m-0 bg-transparent",
+                recordingValue && "text-red-500",
+              )}
+              placeholder={t("messages.message_field_prompt") || ""}
+              value={recordingValue || value}
+            />
+          </div>
         )}
       </div>
       {attachmentPreview && (

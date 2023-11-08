@@ -110,7 +110,7 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
       onDrop={onAttachmentChange}>
-      <div className="w-full md:h-full overflow-auto flex flex-col md:flex-row">
+      <div className="w-full md:h-full overflow-auto flex md:flex-row">
         <div className="flex">
           {size[0] > TAILWIND_MD_BREAKPOINT ||
           (!recipientAddress && !startedFirstMessage) ? (

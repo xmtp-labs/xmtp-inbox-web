@@ -12,12 +12,12 @@ import {
 
 interface MessagePreviewCardControllerProps {
   convo: CachedConversation;
-  spamScore: number;
+  hasPassedCaptcha: boolean;
 }
 
 export const MessagePreviewCardController = ({
   convo,
-  spamScore,
+  hasPassedCaptcha,
 }: MessagePreviewCardControllerProps) => {
   const { t } = useTranslation();
   const lastMessage = useLastMessage(convo.topic);
@@ -91,7 +91,7 @@ export const MessagePreviewCardController = ({
       avatarUrl={getCachedPeerAddressAvatar(convo) || ""}
       conversationDomain={shortAddress(conversationDomain)}
       address={convo?.peerAddress}
-      pinned={spamScore > 0}
+      pinned={!hasPassedCaptcha}
     />
   );
 };

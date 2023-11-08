@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useEffect, useMemo } from "react";
 import { useDb } from "@xmtp/react-sdk";
+import { getEvents } from "zeekaptcha";
 import { useXmtpStore } from "../store/xmtp";
 import useListConversations from "../hooks/useListConversations";
 import { ConversationList } from "../component-library/components/ConversationList/ConversationList";
@@ -34,30 +35,22 @@ export const ConversationListController = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded]);
 
-  const getFraudScore = async (address: string) => {
+  const getCaptchaCheck = async (address: string) => {
     try {
-      const response = await fetch(
-        `https://2krrxo6ed2.execute-api.us-east-1.amazonaws.com/ext/addresses/${address}`,
-        {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            "x-api-key": import.meta.env.VITE_WEBACY_TOKEN,
-          },
-        },
+      const response = await getEvents(address);
+
+      // This is just a dummy field -- not sure what the actual shape of the above response is since I only get back undefined
+      const hasPassedCaptcha = response.passedCaptcha;
+
+      const addressesCheckedForCaptcha = JSON.parse(
+        window.localStorage.getItem("addressesCheckedForCaptcha") || "{}",
       );
 
-      const riskRes = await response.json();
-
-      const addressesCheckedForFraud = JSON.parse(
-        window.localStorage.getItem("addressesCheckedForFraud") || "{}",
-      );
-
-      addressesCheckedForFraud[address] = riskRes;
+      addressesCheckedForCaptcha[address] = hasPassedCaptcha;
 
       window.localStorage.setItem(
         "addressesCheckedForFraud",
-        JSON.stringify(addressesCheckedForFraud),
+        JSON.stringify(addressesCheckedForCaptcha),
       );
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -67,19 +60,20 @@ export const ConversationListController = ({
 
   const filteredConversations = useMemo(() => {
     const convos = conversations.map((conversation) => {
-      const addressesCheckedForFraud = JSON.parse(
-        window.localStorage.getItem("addressesCheckedForFraud") || "{}",
+      const addressesCheckedForCaptcha = JSON.parse(
+        window.localStorage.getItem("addressesCheckedForCaptcha") || "{}",
       );
-      const fraudScore = addressesCheckedForFraud[conversation.peerAddress];
+      const hasPassedCaptcha =
+        addressesCheckedForCaptcha[conversation.peerAddress];
 
-      if (!fraudScore || !fraudScore.count) {
-        void getFraudScore(conversation.peerAddress);
+      if (!hasPassedCaptcha) {
+        void getCaptchaCheck(conversation.peerAddress);
       }
       return (
         <MessagePreviewCardController
           key={conversation.topic}
           convo={conversation}
-          spamScore={fraudScore?.overallRisk}
+          hasPassedCaptcha={hasPassedCaptcha}
         />
       );
     });
