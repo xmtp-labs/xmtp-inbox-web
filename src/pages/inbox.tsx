@@ -41,6 +41,7 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
 
   const recipientAddress = useXmtpStore((s) => s.recipientAddress);
   const setActiveMessage = useXmtpStore((s) => s.setActiveMessage);
+  const activeTab = useXmtpStore((s) => s.activeTab);
 
   const size = useWindowSize();
 
@@ -177,13 +178,15 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
                   )}
 
                   {/* Drag event handling needing for content attachments */}
-                  <MessageInputController
-                    attachment={attachment}
-                    setAttachment={setAttachment}
-                    attachmentPreview={attachmentPreview}
-                    setAttachmentPreview={setAttachmentPreview}
-                    setIsDragActive={setIsDragActive}
-                  />
+                  {activeTab === "messages" ? (
+                    <MessageInputController
+                      attachment={attachment}
+                      setAttachment={setAttachment}
+                      attachmentPreview={attachmentPreview}
+                      setAttachmentPreview={setAttachmentPreview}
+                      setIsDragActive={setIsDragActive}
+                    />
+                  ) : null}
                 </div>
               </div>
             )}

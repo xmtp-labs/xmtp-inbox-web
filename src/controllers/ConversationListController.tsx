@@ -15,6 +15,7 @@ export const ConversationListController = ({
   setStartedFirstMessage,
 }: ConversationListControllerProps) => {
   const { isLoaded, isLoading, conversations } = useListConversations();
+  const { consentState } = useConsent();
 
   const { db } = useDb();
   useStreamAllMessages();
@@ -32,34 +33,16 @@ export const ConversationListController = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded]);
 
-  const getStatus = async (address: string) => {
-    // const {} = useConsent(address)
-    // try {
-    //   c
-    //   // Right now, if any captchas pass, we consider the account safe
-    //   const hasPassedCaptcha = !!response.length;
-    //   const addressesCheckedForCaptcha = JSON.parse(
-    //     window.localStorage.getItem("addressesCheckedForCaptcha") || "{}",
-    //   );
-    //   addressesCheckedForCaptcha[address] = hasPassedCaptcha;
-    //   window.localStorage.setItem(
-    //     "addressesCheckedForCaptcha",
-    //     JSON.stringify(addressesCheckedForCaptcha),
-    //   );
-    // } catch (e) {
-    //   // eslint-disable-next-line no-console
-    //   console.log("error", e);
-    // }
-  };
-
   const filteredConversations = useMemo(() => {
     const convos = conversations.map((conversation) => {
-      const tab = getStatus(conversation.peerAddress);
+      const check = consentState(conversation.peerAddress);
+
+      console.log("CONVERSATION!!!!", conversation);
       return (
         <MessagePreviewCardController
           key={conversation.topic}
           convo={conversation}
-          tab={tab}
+          tab={check}
         />
       );
     });
@@ -73,7 +56,7 @@ export const ConversationListController = ({
     allowed: { props: { tab: string } }[];
   }>(
     (acc, item) => {
-      if (item.props.tab === "blocked") {
+      if (item.props.tab === "denied") {
         acc.blocked.push(item);
       } else if (item.props.tab === "allowed") {
         acc.allowed.push(item);
@@ -85,20 +68,21 @@ export const ConversationListController = ({
     { blocked: [], requested: [], allowed: [] },
   );
 
+  const messagesToPass = !isLoading
+    ? activeTab === "messages"
+      ? allowed
+      : activeTab === "blocked"
+      ? blocked
+      : requested
+    : [];
+
   return (
     <ConversationList
       hasRecipientEnteredValue={!!recipientInput}
       setStartedFirstMessage={() => setStartedFirstMessage(true)}
       isLoading={isLoading}
-      messages={
-        !isLoading
-          ? activeTab === "Messages"
-            ? allowed
-            : activeTab === blocked
-            ? blocked
-            : requested
-          : []
-      }
+      messages={messagesToPass}
+      activeTab={activeTab}
     />
   );
 };

@@ -34,6 +34,8 @@ export const MessagePreviewCardController = ({
   const lastMessage = useLastMessage(convo.topic);
   // XMTP State
   const recipientAddress = useXmtpStore((s) => s.recipientAddress);
+  const activeTab = useXmtpStore((s) => s.activeTab);
+
   const setRecipientInput = useXmtpStore((s) => s.setRecipientInput);
   const setRecipientAddress = useXmtpStore((s) => s.setRecipientAddress);
   const setRecipientName = useXmtpStore((s) => s.setRecipientName);
@@ -144,6 +146,7 @@ export const MessagePreviewCardController = ({
       avatarUrl={getCachedPeerAddressAvatar(convo) || ""}
       conversationDomain={shortAddress(conversationDomain)}
       address={convo?.peerAddress}
+      activeTab={activeTab}
     />
   );
 };

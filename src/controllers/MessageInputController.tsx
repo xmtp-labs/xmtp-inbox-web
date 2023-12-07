@@ -68,34 +68,19 @@ export const MessageInputController = ({
   };
 
   return (
-    <>
-      <div>
-        <ReactModal isOpen={modalOpen} style={customStyles}>
-          <XIcon
-            width={16}
-            style={{ alignSelf: "flex-end", cursor: "pointer" }}
-            onClick={handleCloseModal}
-          />
-          <div className="flex flex-col py-2">
-            <p>Please verify you are a real person to send this message.</p>
-            <p>Thanks for keeping our network free of spam!</p>
-          </div>
-        </ReactModal>
-      </div>
-      <MessageInput
-        shouldModalOpen={shouldModalOpen}
-        handleOpenModal={handleOpenModal}
-        peerAddress={recipientAddress}
-        isDisabled={!recipientOnNetwork}
-        startConversation={startConversation}
-        sendMessage={sendMessage}
-        conversation={conversation}
-        attachment={attachment}
-        setAttachment={setAttachment}
-        attachmentPreview={attachmentPreview}
-        setAttachmentPreview={setAttachmentPreview}
-        setIsDragActive={setIsDragActive}
-      />
-    </>
+    <MessageInput
+      shouldModalOpen={shouldModalOpen}
+      handleOpenModal={handleOpenModal}
+      peerAddress={recipientAddress}
+      isDisabled={!recipientOnNetwork}
+      startConversation={startConversation}
+      sendMessage={sendMessage}
+      conversation={conversation}
+      attachment={attachment}
+      setAttachment={setAttachment}
+      attachmentPreview={attachmentPreview}
+      setAttachmentPreview={setAttachmentPreview}
+      setIsDragActive={setIsDragActive}
+    />
   );
 };

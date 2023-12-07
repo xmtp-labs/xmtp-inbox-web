@@ -12,6 +12,7 @@ import { FullConversation } from "../component-library/components/FullConversati
 import { FullMessageController } from "./FullMessageController";
 import { isMessageSupported } from "../helpers/isMessagerSupported";
 import { updateConversationIdentity } from "../helpers/conversation";
+import { useXmtpStore } from "../store/xmtp";
 
 type FullConversationControllerProps = {
   conversation: CachedConversation;
@@ -20,6 +21,7 @@ type FullConversationControllerProps = {
 export const FullConversationController: React.FC<
   FullConversationControllerProps
 > = ({ conversation }) => {
+  const activeTab = useXmtpStore((s) => s.activeTab);
   const lastMessageDateRef = useRef<Date>();
   const renderedDatesRef = useRef<Date[]>([]);
   const { db } = useDb();
@@ -77,7 +79,12 @@ export const FullConversationController: React.FC<
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
       className="w-full h-full flex flex-col overflow-auto">
-      <FullConversation isLoading={isLoading} messages={messagesWithDates} />
+      <FullConversation
+        isLoading={isLoading}
+        messages={messagesWithDates}
+        activeTab={activeTab}
+        address={conversation.peerAddress}
+      />
     </div>
   );
 };

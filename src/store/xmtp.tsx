@@ -89,6 +89,6 @@ export const useXmtpStore = create<XmtpState>((set) => ({
   setAttachmentError: (attachmentError) => set(() => ({ attachmentError })),
   activeMessage: undefined,
   setActiveMessage: (activeMessage) => set(() => ({ activeMessage })),
-  activeTab: "Messages",
+  activeTab: "messages",
   setActiveTab: (activeTab) => set(() => ({ activeTab })),
 }));

@@ -48,6 +48,7 @@ interface MessagePreviewCardProps {
    */
   pinned?: boolean;
   // To-do: Add error views once we have the designs
+  activeTab: string;
 }
 
 export const MessagePreviewCard = ({
@@ -61,6 +62,7 @@ export const MessagePreviewCard = ({
   isSelected,
   conversationDomain,
   pinned,
+  activeTab,
 }: MessagePreviewCardProps) => {
   const { t } = useTranslation();
 
@@ -104,7 +106,9 @@ export const MessagePreviewCard = ({
           <span
             className="text-md text-gray-600 line-clamp-1 w-full break-all"
             data-testid="message-preview-text">
-            {text ?? t("messages.convos_empty_text_placeholder")}
+            {activeTab !== "blocked"
+              ? text
+              : t("messages.convos_empty_text_placeholder")}
           </span>
         )}
       </div>
@@ -121,7 +125,13 @@ export const MessagePreviewCard = ({
             "h-full",
             "flex flex-col items-end justify-between",
           )}>
-          {datetime && t("{{datetime, ago}}", { datetime })}
+          {activeTab === "blocked" ? (
+            <button type="button" className="text-purple-300 font-bold text-md">
+              Unblock
+            </button>
+          ) : (
+            datetime && t("{{datetime, ago}}", { datetime })
+          )}
           {pinned && (
             <div>
               <StarIcon className="text-indigo-600 mt-2" width={16} />
