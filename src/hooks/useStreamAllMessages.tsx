@@ -1,6 +1,7 @@
 import {
   useStreamAllMessages as _useStreamAllMessages,
   useConversation,
+  useStreamConsentList,
 } from "@xmtp/react-sdk";
 import type { DecodedMessage } from "@xmtp/react-sdk";
 import { useCallback, useRef } from "react";
@@ -45,6 +46,7 @@ const useStreamAllMessages = () => {
   );
 
   void _useStreamAllMessages(onMessage);
+  void useStreamConsentList();
 };
 
 export default useStreamAllMessages;

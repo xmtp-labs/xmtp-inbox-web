@@ -35,6 +35,8 @@ interface XmtpState {
   setAttachmentError: (attachmentError: string) => void;
   activeMessage?: CachedMessageWithId;
   setActiveMessage: (message?: CachedMessageWithId) => void;
+  activeTab: string;
+  setActiveTab: (activeTab: string) => void;
 }
 
 export const useXmtpStore = create<XmtpState>((set) => ({
@@ -87,4 +89,6 @@ export const useXmtpStore = create<XmtpState>((set) => ({
   setAttachmentError: (attachmentError) => set(() => ({ attachmentError })),
   activeMessage: undefined,
   setActiveMessage: (activeMessage) => set(() => ({ activeMessage })),
+  activeTab: "Messages",
+  setActiveTab: (activeTab) => set(() => ({ activeTab })),
 }));

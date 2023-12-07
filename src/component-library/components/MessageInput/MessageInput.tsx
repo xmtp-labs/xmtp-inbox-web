@@ -74,6 +74,8 @@ type InputProps = {
    * Function to set whether content is being dragged over the draggable area, including the message input
    */
   setIsDragActive: (status: boolean) => void;
+  handleOpenModal: () => void;
+  shouldModalOpen: boolean;
 };
 
 export const MessageInput = ({
@@ -87,6 +89,8 @@ export const MessageInput = ({
   attachmentPreview,
   setAttachmentPreview,
   setIsDragActive,
+  handleOpenModal,
+  shouldModalOpen,
 }: InputProps) => {
   const { getCachedByPeerAddress } = useConversation();
   const { t } = useTranslation();
@@ -258,26 +262,32 @@ export const MessageInput = ({
         {attachmentError ? (
           <p className="text-red-600 w-full m-1 ml-4">{attachmentError}</p>
         ) : (
-          <textarea
-            id="chat"
-            data-testid="message-input"
-            onChange={onChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                void send();
-              }
-            }}
-            ref={textAreaRef}
-            rows={1}
-            className={classNames(
-              textAreaStyles,
-              "border-b-8 border-gray-50 m-0 bg-transparent",
-              recordingValue && "text-red-500",
-            )}
-            placeholder={t("messages.message_field_prompt") || ""}
-            value={recordingValue || value}
-          />
+          <div className="flex flex-row justify-between items-center">
+            <textarea
+              id="chat"
+              data-testid="message-input"
+              onChange={onChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  if (shouldModalOpen) {
+                    handleOpenModal();
+                  } else {
+                    void send();
+                  }
+                }
+              }}
+              ref={textAreaRef}
+              rows={1}
+              className={classNames(
+                textAreaStyles,
+                "border-b-8 border-gray-50 m-0 bg-transparent",
+                recordingValue && "text-red-500",
+              )}
+              placeholder={t("messages.message_field_prompt") || ""}
+              value={recordingValue || value}
+            />
+          </div>
         )}
       </div>
       {attachmentPreview && (
@@ -400,7 +410,11 @@ export const MessageInput = ({
             label={<ArrowUpIcon color="white" width="20" />}
             srText={t("aria_labels.submit_message") || ""}
             onClick={() => {
-              void send();
+              if (shouldModalOpen) {
+                handleOpenModal();
+              } else {
+                void send();
+              }
             }}
             isDisabled={
               !(value || attachmentPreview) || isDisabled || !!attachmentError

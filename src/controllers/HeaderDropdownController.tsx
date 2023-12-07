@@ -18,7 +18,7 @@ export const HeaderDropdownController = () => {
         setConversationTopic();
         setStartedFirstMessage(true);
       }}
-      disabled
+      // disabled
       isMobileView={width <= TAILWIND_MD_BREAKPOINT}
     />
   );

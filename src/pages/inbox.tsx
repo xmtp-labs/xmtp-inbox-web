@@ -1,6 +1,6 @@
 import type React from "react";
 import { useEffect, useState } from "react";
-import { useClient, useConversations } from "@xmtp/react-sdk";
+import { useConsent, useClient, useConversations } from "@xmtp/react-sdk";
 import { useDisconnect, useWalletClient } from "wagmi";
 import type { Attachment } from "@xmtp/content-type-remote-attachment";
 import { useNavigate } from "react-router-dom";
@@ -29,11 +29,13 @@ const Inbox: React.FC<{ children?: React.ReactNode }> = () => {
   const { conversations } = useConversations();
   const selectedConversation = useSelectedConversation();
   const { data: walletClient } = useWalletClient();
+  const { loadConsentList } = useConsent();
 
   useEffect(() => {
     if (!client) {
       navigate("/");
     }
+    void loadConsentList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client]);
 
