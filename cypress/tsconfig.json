@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
+    "module": "ESNext",
     "lib": ["es5", "dom"],
     "types": ["cypress", "node"]
   },

@@ -7,4 +7,7 @@ import wasm from "vite-plugin-wasm";
 export default defineConfig({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   plugins: [react(), pluginRewriteAll(), wasm()],
+  build: {
+    target: "esnext",
+  },
 });
