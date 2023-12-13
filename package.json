@@ -40,7 +40,7 @@
     "@xmtp/content-type-remote-attachment": "^1.1.4",
     "@xmtp/content-type-reply": "^1.1.5",
     "@xmtp/react-sdk": "^3.0.0",
-    "@xmtp/xmtp-js": "^11.2.1",
+    "@xmtp/xmtp-js": "^11.3.0-beta.2",
     "buffer": "^6.0.3",
     "date-fns": "^2.29.3",
     "dexie": "^3.2.4",
@@ -115,6 +115,7 @@
     "typescript": "^5.0.4",
     "vite": "^4.3.9",
     "vite-plugin-rewrite-all": "^1.0.1",
+    "vite-plugin-wasm": "^3.3.0",
     "vitest": "^0.32.0",
     "walletlink": "^2.4.6"
   }
