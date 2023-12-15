@@ -8,7 +8,9 @@ import { useAccount, useDisconnect } from "wagmi";
 import { useRouter } from "next/router";
 import { classNames, wipeKeys } from "../helpers";
 import { OnboardingStep } from "../component-library/components/OnboardingStep/OnboardingStep";
+import { ContentTypeId } from "@xmtp/xmtp-js";
 
+console.log("this onboaridng page", ContentTypeId);
 const OnboardingPage: NextPage = () => {
   const client = useXmtpStore((state) => state.client);
   const [step, setStep] = useState(1);
