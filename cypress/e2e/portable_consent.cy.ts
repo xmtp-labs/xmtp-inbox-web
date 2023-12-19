@@ -1,3 +1,4 @@
+import "../../src/polyfills";
 import { Client } from "@xmtp/react-sdk";
 import { startDemoEnv, checkElement } from "../test_utils";
 import randomWallet from "../../src/helpers/createRandomWallet";
