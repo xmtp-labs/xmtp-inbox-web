@@ -12,7 +12,7 @@
   width: 50px;
   height: 50px;
   transform: scale(0.1);
-  background-image: url("../../../../public/xmtp-icon.png");
+  background-image: url("../../../images/xmtp-icon.png");
   background-size: 50px auto;
   border-radius: 50%;
   animation: fall linear infinite;

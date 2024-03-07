@@ -9,6 +9,7 @@ import {
 import { ClipboardCopyIcon, XIcon } from "@heroicons/react/outline";
 import { useTranslation } from "react-i18next";
 import { QRCode } from "react-qrcode-logo";
+import xmtpIconUrl from "../../../images/xmtp-icon.png";
 import type { ETHAddress } from "../../../helpers";
 import { classNames, isAppEnvDemo, shortAddress } from "../../../helpers";
 import { XmtpIcon } from "../Icons/XmtpIcon";
@@ -16,6 +17,8 @@ import { Avatar } from "../Avatar/Avatar";
 import { GhostButton } from "../GhostButton/GhostButton";
 import { DisconnectIcon } from "../Icons/DisconnectIcon";
 import i18next, { supportedLocales } from "../../../helpers/i18n";
+import shareQrBgUrl from "../../../images/shareQrBg.png";
+import xmtpLogoUrl from "../../../images/xmtp-logo.png";
 
 interface SideNavProps {
   /**
@@ -205,7 +208,11 @@ const SideNav = ({
           <div
             data-testid="share-qr-modal"
             className="bg-[#ffffffa3] w-[100vw] h-[100vh] flex items-center justify-center absolute top-0 z-20">
-            <div className="bg-[url('/shareQrBg.png')] bg-repeat-round m-4 lg:w-[35%] sm:w-[90%] md:w-[50%] h-[90vh] text-white flex flex-col items-center p-4 rounded-3xl drop-shadow-lg">
+            <div
+              className="bg-repeat-round m-4 lg:w-[35%] sm:w-[90%] md:w-[50%] h-[90vh] text-white flex flex-col items-center p-4 rounded-3xl drop-shadow-lg"
+              style={{
+                backgroundImage: `url('${shareQrBgUrl}')`,
+              }}>
               <div
                 role="button"
                 tabIndex={0}
@@ -219,11 +226,7 @@ const SideNav = ({
                 <XIcon width={24} />
               </div>
               <div className="h-8">
-                <img
-                  className="h-[100%]"
-                  alt="xmtp-logo"
-                  src="/xmtp-logo.png"
-                />
+                <img className="h-[100%]" alt="xmtp-logo" src={xmtpLogoUrl} />
               </div>
               <div className="text-center p-4 pb-6">
                 {t("common.share_code")}
@@ -231,7 +234,7 @@ const SideNav = ({
               <div className="p-4 flex items-center justify-center rounded-3xl bg-white">
                 <QRCode
                   size={200}
-                  logoImage="/xmtp-icon.png"
+                  logoImage={xmtpIconUrl}
                   removeQrCodeBehindLogo
                   logoPadding={10}
                   value={`${window.location.origin}/dm/${walletAddress ?? ""}`}
