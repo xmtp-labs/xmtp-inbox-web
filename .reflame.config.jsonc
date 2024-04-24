@@ -116,6 +116,7 @@
     "@wagmi/core": {
       "entryPoints": [
         "/",
+        "/chains",
         "/connectors/mock"
       ]
     },
@@ -174,6 +175,25 @@
         "/chains",
         "/"
       ]
+    },
+    "@ucanto/core": {
+      "entryPoints": [
+        "/delegation",
+        "/"
+      ]
+    },
+    "@ucanto/principal": {
+      "entryPoints": [
+        "/ed25519",
+        "/"
+      ]
     }
+  },
+  "npmPackageOverrides": {
+    // This package is specified as a git dependency: https://github.com/web3-storage/w3up/blob/d6978d7ab299be76987c6533d18e6857f6998fe6/packages/access-client/package.json#L113
+    // which Reflame doesn't support yet
+    // Luckily looks like the only reason for doing this was to point to a fork that fixes types: https://github.com/fission-codes/one-webcrypto/commit/5148cd14d5489a8ac4cd38223870e02db15a2382
+    // which is irrelevant to the Reflame deploy, so we can safely just point to the original package
+    "one-webcrypto": "npm:one-webcrypto@1.0.3"
   }
 }
