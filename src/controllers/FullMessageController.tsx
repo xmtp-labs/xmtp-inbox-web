@@ -3,6 +3,8 @@ import { useClient } from "@xmtp/react-sdk";
 import { FramesClient } from "@xmtp/frames-client";
 import { useEffect, useState } from "react";
 import type { GetMetadataResponse } from "@open-frames/proxy-client";
+import { createPublicClient, createWalletClient, custom } from "viem";
+import { sepolia } from "viem/chains";
 import { FullMessage } from "../component-library/components/FullMessage/FullMessage";
 import { classNames, shortAddress } from "../helpers";
 import MessageContentController from "./MessageContentController";
@@ -16,6 +18,17 @@ import {
   isValidFrame,
   isXmtpFrame,
 } from "../helpers/frameInfo";
+
+export const walletClient = createWalletClient({
+  chain: sepolia,
+  transport: custom(window.ethereum!),
+});
+
+export const publicClient = createPublicClient({
+  chain: sepolia,
+  transport: custom(window.ethereum!),
+});
+export const [account] = await walletClient.getAddresses();
 
 interface FullMessageControllerProps {
   message: CachedMessageWithId;
@@ -61,9 +74,48 @@ export const FullMessageController = ({
       buttonIndex,
       conversationTopic: conversationTopic as string,
       participantAccountAddresses: [client.address, conversation.peerAddress],
+      address: client.address,
+
+      state: frameInfo.state,
     });
 
-    if (action === "post") {
+    const isTransactionFrame =
+      frameMetadata.extractedTags["fc:frame:button:1:action"] === "tx";
+
+    if (isTransactionFrame) {
+      const target = frameMetadata.extractedTags["fc:frame:button:1:target"];
+      const buttonPostUrl =
+        frameMetadata.extractedTags["fc:frame:button:1:post_url"];
+      const transactionInfo = await framesClient.proxy.postTransaction(
+        target,
+        payload,
+      );
+
+      const address = transactionInfo.params.to as `0x${string}`;
+      // Returned as wei in a string
+      const value = Number(transactionInfo.params.value);
+      const hash = await walletClient.sendTransaction({
+        account,
+        to: address,
+        value: BigInt(value),
+      });
+
+      const transactionReceipt = await publicClient.getTransaction({ hash });
+
+      if (
+        transactionReceipt.to !== address.toLowerCase() ||
+        transactionReceipt.value !== BigInt(value)
+      ) {
+        // Error handle, shouldn't show frame success screen
+      } else {
+        payload.untrustedData.transactionId = hash;
+        const completeTransaction = await framesClient.proxy.post(
+          buttonPostUrl,
+          payload,
+        );
+        setFrameMetadata(completeTransaction);
+      }
+    } else if (action === "post") {
       const updatedFrameMetadata = await framesClient.proxy.post(
         postUrl,
         payload,
